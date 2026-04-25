@@ -6,12 +6,14 @@
 <title>Amigo Ley — Asesor Jurídico Colombia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
   --bg:#07080d;--surface:rgba(255,255,255,0.035);--border:rgba(255,255,255,0.07);
   --text:#e8eaf0;--muted:rgba(232,234,240,0.48);--dim:rgba(232,234,240,0.22);
   --gold:#f5c842;--blue:#5ba4f5;--teal:#3ecfb2;--red:#f56e6e;--green:#4cca8a;
+  --premium:#f5c842;
 }
 html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);overflow:hidden}
 #app{position:relative;z-index:10;height:100vh;display:flex;flex-direction:column}
@@ -29,46 +31,34 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 @keyframes goldRing{0%{box-shadow:0 0 0 0 rgba(245,200,66,.55)}70%{box-shadow:0 0 0 30px rgba(245,200,66,0)}100%{box-shadow:0 0 0 0 rgba(245,200,66,0)}}
 @keyframes expandOverlay{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}40%{opacity:.15}100%{opacity:0;transform:translate(-50%,-50%) scale(3)}}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* ORBS */
 #orb-layer{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.orb{position:absolute;border-radius:50%;filter:blur(72px);will-change:transform;transition:background 1.2s ease}
+.orb{position:absolute;border-radius:50%;filter:blur(72px);will-change:transform}
 #o1{width:500px;height:500px;top:-120px;left:-100px;background:radial-gradient(circle at 40% 40%,rgba(91,164,245,.65),rgba(100,80,255,.3),transparent 70%);animation:orbFloat1 11s ease-in-out infinite}
 #o2{width:420px;height:420px;bottom:-100px;right:-80px;background:radial-gradient(circle at 60% 60%,rgba(62,207,178,.55),rgba(50,180,160,.25),transparent 70%);animation:orbFloat2 14s ease-in-out infinite}
 #o3{width:300px;height:300px;top:38%;left:42%;background:radial-gradient(circle at 50% 50%,rgba(160,100,255,.45),rgba(120,70,220,.2),transparent 70%);animation:orbFloat3 9s ease-in-out infinite}
 #overlay-flash{position:fixed;pointer-events:none;z-index:5;display:none;border-radius:50%;width:120vmax;height:120vmax;top:50%;left:50%;transform:translate(-50%,-50%)}
 
-/* ── APIKEY SCREEN ── */
-#apikey-screen{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeUp .7s ease forwards}
-.ak-card{max-width:460px;width:100%}
-.ak-logo{text-align:center;margin-bottom:28px}
-.ak-orb{width:58px;height:58px;border-radius:50%;background:radial-gradient(circle,rgba(91,164,245,.95),rgba(100,80,255,.6));margin:0 auto 14px;box-shadow:0 0 28px rgba(91,164,245,.35);animation:breathe 4s ease-in-out infinite}
-.ak-name{font-family:'Fraunces',serif;font-size:30px;font-weight:300;letter-spacing:-.5px;background:linear-gradient(135deg,#e8eaf0,rgba(91,164,245,.9));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.ak-sub{color:var(--dim);font-size:12px;font-family:'DM Mono',monospace;margin-top:4px;letter-spacing:.05em}
-.ak-box{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:14px}
-.ak-box p{color:var(--muted);font-size:13.5px;line-height:1.75;margin-bottom:10px}
-.ak-box p:last-child{margin-bottom:0}
-.ak-box strong{color:rgba(232,234,240,.85);font-weight:500}
-.ak-box a{color:var(--blue);text-decoration:none}
-.ak-box a:hover{text-decoration:underline}
-.ak-label{display:block;color:var(--dim);font-size:11px;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:8px;text-transform:uppercase}
-.ak-input-wrap{position:relative;margin-bottom:12px}
-.ak-input{width:100%;padding:13px 44px 13px 14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:var(--text);font-size:13.5px;font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;letter-spacing:.03em}
-.ak-input:focus{border-color:rgba(91,164,245,.5)}
-.ak-input.error{border-color:rgba(245,110,110,.6);animation:shake .35s ease}
-.ak-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--dim);cursor:pointer;font-size:15px;line-height:1;padding:2px}
-.ak-eye:hover{color:var(--muted)}
-.ak-hint{color:var(--dim);font-size:11.5px;font-family:'DM Mono',monospace;margin-bottom:14px;line-height:1.5}
-.ak-hint span{color:rgba(245,200,66,.7)}
-.ak-btn{width:100%;padding:14px;background:linear-gradient(135deg,rgba(91,164,245,.18),rgba(100,80,255,.18));border:1px solid rgba(91,164,245,.35);border-radius:13px;color:#e8eaf0;font-size:14px;font-weight:500;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif}
-.ak-btn:hover{background:linear-gradient(135deg,rgba(91,164,245,.32),rgba(100,80,255,.32));border-color:rgba(91,164,245,.6);transform:translateY(-1px)}
-.ak-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.ak-err{color:var(--red);font-size:12.5px;font-family:'DM Mono',monospace;margin-top:10px;text-align:center;min-height:18px}
-.ak-foot{text-align:center;color:var(--dim);font-size:11px;font-family:'DM Mono',monospace;margin-top:14px}
+/* LOGIN SCREEN */
+#login-screen{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeUp .7s ease forwards}
+.login-card{max-width:420px;width:100%;text-align:center}
+.login-orb{width:72px;height:72px;border-radius:50%;background:radial-gradient(circle,rgba(91,164,245,.95),rgba(100,80,255,.6));margin:0 auto 18px;box-shadow:0 0 32px rgba(91,164,245,.35);animation:breathe 4s ease-in-out infinite}
+.login-name{font-family:'Fraunces',serif;font-size:34px;font-weight:300;letter-spacing:-.5px;background:linear-gradient(135deg,#e8eaf0,rgba(91,164,245,.9));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px}
+.login-sub{color:var(--dim);font-size:12px;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:32px}
+.login-features{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:24px;text-align:left}
+.login-feature{display:flex;align-items:center;gap:12px;margin-bottom:14px;color:var(--muted);font-size:13.5px}
+.login-feature:last-child{margin-bottom:0}
+.login-feature-icon{font-size:18px;flex-shrink:0}
+.login-feature strong{color:var(--text)}
+.google-btn{width:100%;padding:14px;background:#fff;border:none;border-radius:13px;color:#1a1a1a;font-size:14px;font-weight:500;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px}
+.google-btn:hover{background:#f0f0f0;transform:translateY(-1px)}
+.google-icon{width:18px;height:18px}
+.login-terms{color:var(--dim);font-size:11px;font-family:'DM Mono',monospace;line-height:1.6}
 
-/* ── DISCLAIMER ── */
-#disclaimer{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;animation:fadeUp .6s ease forwards}
+/* DISCLAIMER */
+#disclaimer{flex:1;display:flex;align-items:center;justify-content:center;padding:24px;overflow-y:auto;animation:fadeUp .6s ease forwards;display:none}
 .disc-card{max-width:480px;width:100%}
 .disc-logo{text-align:center;margin-bottom:26px}
 .logo-orb{width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(91,164,245,.95),rgba(100,80,255,.6));margin:0 auto 14px;box-shadow:0 0 28px rgba(91,164,245,.35);animation:breathe 4s ease-in-out infinite}
@@ -83,8 +73,8 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .disc-btn:hover{background:linear-gradient(135deg,rgba(91,164,245,.32),rgba(100,80,255,.32));border-color:rgba(91,164,245,.6);transform:translateY(-1px)}
 .disc-foot{text-align:center;color:var(--dim);font-size:11px;font-family:'DM Mono',monospace;margin-top:13px}
 
-/* ── HEADER ── */
-#header{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid var(--border);flex-shrink:0;z-index:20;animation:fadeIn .5s ease forwards}
+/* HEADER */
+#header{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);flex-shrink:0;z-index:20;animation:fadeIn .5s ease forwards}
 .hdr-left{display:flex;align-items:center;gap:10px}
 .hdr-orb{width:28px;height:28px;border-radius:50%;flex-shrink:0;transition:background .8s ease,box-shadow .6s ease}
 .hdr-orb.idle{background:radial-gradient(circle,rgba(91,164,245,.95),rgba(100,80,255,.6));box-shadow:0 0 12px rgba(91,164,245,.25)}
@@ -95,15 +85,34 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .hdr-status{font-size:10px;font-family:'DM Mono',monospace;margin-top:2px;transition:color .4s}
 .hdr-status.online{color:rgba(62,207,178,.8)}
 .hdr-status.thinking{color:rgba(255,185,50,.8)}
-.hdr-status.scanning{color:rgba(245,200,66,.8)}
-.hdr-right{display:flex;gap:8px;align-items:center}
-.hdr-btn{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.22);border-radius:18px;padding:5px 12px;color:rgba(245,200,66,.8);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
-.hdr-btn:hover{background:rgba(245,200,66,.16);border-color:rgba(245,200,66,.45)}
-.hdr-key-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:5px 12px;color:var(--dim);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
-.hdr-key-btn:hover{color:var(--muted);border-color:rgba(255,255,255,.13)}
+.hdr-right{display:flex;gap:7px;align-items:center}
+.hdr-btn{background:rgba(245,200,66,.08);border:1px solid rgba(245,200,66,.22);border-radius:18px;padding:5px 11px;color:rgba(245,200,66,.8);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+.hdr-btn:hover{background:rgba(245,200,66,.16)}
 
-/* ── LEY BANNER ── */
-#ley-banner{margin:7px 13px 0;border-radius:14px;border:1px solid transparent;padding:13px 15px;flex-shrink:0;position:relative;overflow:hidden;z-index:15;animation:slideDown .4s ease forwards;background:rgba(7,8,13,.97)}
+/* USER AVATAR */
+.hdr-user{display:flex;align-items:center;gap:7px;cursor:pointer;padding:4px 10px;border-radius:18px;border:1px solid var(--border);transition:all .2s}
+.hdr-user:hover{background:var(--surface)}
+.hdr-avatar{width:22px;height:22px;border-radius:50%;object-fit:cover}
+.hdr-avatar-placeholder{width:22px;height:22px;border-radius:50%;background:rgba(91,164,245,.3);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--blue)}
+.hdr-username{font-size:11px;color:var(--muted);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* PLAN BADGE */
+.plan-badge{font-size:9px;font-family:'DM Mono',monospace;padding:2px 6px;border-radius:6px;font-weight:500;letter-spacing:.04em}
+.plan-badge.free{background:rgba(255,255,255,.07);color:var(--dim)}
+.plan-badge.premium{background:rgba(245,200,66,.15);color:var(--gold)}
+
+/* USAGE BAR */
+#usage-bar{padding:6px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;gap:10px}
+.usage-label{font-size:10px;font-family:'DM Mono',monospace;color:var(--dim);white-space:nowrap}
+.usage-track{flex:1;height:3px;background:rgba(255,255,255,.07);border-radius:99px;overflow:hidden}
+.usage-fill{height:100%;border-radius:99px;transition:width .5s ease}
+.usage-fill.green{background:var(--green)}
+.usage-fill.gold{background:var(--gold)}
+.usage-fill.red{background:var(--red)}
+.usage-count{font-size:10px;font-family:'DM Mono',monospace;color:var(--dim);white-space:nowrap}
+
+/* LEY BANNER */
+#ley-banner{margin:7px 13px 0;border-radius:14px;border:1px solid transparent;padding:13px 15px;flex-shrink:0;position:relative;overflow:hidden;z-index:15;animation:slideDown .4s ease forwards;background:rgba(7,8,13,.97);display:none}
 #ley-banner::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:currentColor;opacity:.6}
 .ley-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
 .ley-label{display:flex;align-items:center;gap:6px;margin-bottom:5px}
@@ -114,13 +123,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .ley-breve{color:var(--muted);font-size:12.5px;line-height:1.55}
 .ley-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-top:1px}
 .ley-more{border-radius:9px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;border:1px solid;white-space:nowrap}
-.ley-xbtn{background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:18px;line-height:1;padding:0 3px;transition:color .2s}
-.ley-xbtn:hover{color:var(--muted)}
+.ley-xbtn{background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:18px;line-height:1;padding:0 3px}
 .ley-exp{margin-top:11px;padding:11px;background:rgba(255,255,255,.04);border-radius:9px;animation:fadeIn .3s ease}
 .ley-detail{color:rgba(232,234,240,.7);font-size:12px;line-height:1.65;margin-bottom:7px}
 .ley-tec{font-size:11px;font-family:'DM Mono',monospace;line-height:1.5;opacity:.72}
 
-/* ── CHAT ── */
+/* CHAT */
 #chat{flex:1;overflow-y:auto;padding:13px 13px 5px;display:flex;flex-direction:column;gap:9px;position:relative;z-index:10;min-height:0}
 .msg{animation:msgIn .32s ease forwards;display:flex}
 .msg.user{justify-content:flex-end}
@@ -130,8 +138,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .bubble.bot{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px 16px 16px 4px;color:rgba(232,234,240,.85)}
 .bubble strong{color:var(--text);font-weight:500}
 .bubble em{color:rgba(232,234,240,.6);font-style:italic}
-.bubble ul,.bubble ol{margin-left:18px;margin-top:4px}
-.bubble li{margin-bottom:3px}
+
+/* UPGRADE BUBBLE */
+.bubble.upgrade{background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(245,160,0,.05));border-color:rgba(245,200,66,.25)}
+.upgrade-btn{display:inline-block;margin-top:10px;padding:8px 16px;background:linear-gradient(135deg,rgba(245,200,66,.25),rgba(245,160,0,.2));border:1px solid rgba(245,200,66,.4);border-radius:10px;color:var(--gold);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+.upgrade-btn:hover{background:linear-gradient(135deg,rgba(245,200,66,.4),rgba(245,160,0,.3))}
+
 .thinking-bubble{display:flex;align-items:center;gap:6px;padding:12px 15px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px 16px 16px 4px}
 .dot{width:5px;height:5px;border-radius:50%;background:rgba(91,164,245,.85)}
 .dot:nth-child(1){animation:dotPulse 1.4s ease-in-out 0s infinite}
@@ -140,11 +152,12 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .scan-bubble{padding:12px 15px;background:rgba(245,200,66,.06);border:1px solid rgba(245,200,66,.18);border-radius:16px 16px 16px 4px;color:rgba(245,200,66,.8);font-size:12px;font-family:'DM Mono',monospace;position:relative;overflow:hidden}
 .scan-beam{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(245,200,66,.8),transparent);animation:scanBeam 1.6s linear infinite}
 
-/* ── INPUT ── */
+/* INPUT */
 #input-area{padding:7px 13px 13px;flex-shrink:0;position:relative;z-index:20}
 .drop-zone{border:1px dashed rgba(255,255,255,.09);border-radius:10px;padding:8px 13px;text-align:center;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px}
 .drop-zone:hover,.drop-zone.drag-over{border-color:rgba(91,164,245,.5);background:rgba(91,164,245,.05)}
 .drop-zone span{color:var(--dim);font-size:11px;font-family:'DM Mono',monospace}
+.drop-zone.locked{cursor:not-allowed;opacity:.5}
 .input-row{display:flex;align-items:flex-end;gap:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:17px;padding:4px 4px 4px 14px;transition:border-color .2s}
 .input-row:focus-within{border-color:rgba(91,164,245,.35)}
 #msg-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;resize:none;line-height:1.55;padding:9px 0;height:40px;max-height:110px;overflow-y:auto}
@@ -155,10 +168,27 @@ html,body{width:100%;height:100%;background:var(--bg);font-family:'DM Sans',sans
 .input-foot{text-align:center;color:var(--dim);font-size:10px;font-family:'DM Mono',monospace;margin-top:7px}
 input[type=file]{display:none}
 
-/* ── QUICK PILLS ── */
+/* QUICK PILLS */
 .quick-pills{display:flex;flex-wrap:wrap;gap:6px;padding:0 0 8px;justify-content:center}
 .pill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:18px;padding:5px 12px;color:var(--muted);font-size:11.5px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
 .pill:hover{background:rgba(91,164,245,.1);border-color:rgba(91,164,245,.3);color:rgba(91,164,245,.9)}
+
+/* UPGRADE MODAL */
+#upgrade-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease}
+.upgrade-card{max-width:380px;width:100%;background:#0e0f18;border:1px solid rgba(245,200,66,.3);border-radius:24px;padding:28px;text-align:center}
+.upgrade-crown{font-size:40px;margin-bottom:12px}
+.upgrade-title{font-family:'Fraunces',serif;font-size:24px;font-weight:300;color:var(--gold);margin-bottom:6px}
+.upgrade-sub{color:var(--muted);font-size:13px;margin-bottom:22px;line-height:1.6}
+.upgrade-features{text-align:left;margin-bottom:22px}
+.upgrade-feature{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);color:var(--muted);font-size:13px}
+.upgrade-feature:last-child{border-bottom:none}
+.upgrade-feature-check{color:var(--green);font-size:16px;flex-shrink:0}
+.upgrade-price{font-family:'Fraunces',serif;font-size:32px;color:var(--text);margin-bottom:4px}
+.upgrade-price span{font-size:14px;color:var(--muted);font-family:'DM Sans',sans-serif}
+.upgrade-cta{width:100%;padding:14px;background:linear-gradient(135deg,rgba(245,200,66,.3),rgba(245,160,0,.2));border:1px solid rgba(245,200,66,.5);border-radius:13px;color:var(--gold);font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:10px;transition:all .2s}
+.upgrade-cta:hover{background:linear-gradient(135deg,rgba(245,200,66,.45),rgba(245,160,0,.35))}
+.upgrade-close{background:transparent;border:none;color:var(--dim);font-size:13px;cursor:pointer;font-family:'DM Sans',sans-serif;padding:4px}
+.upgrade-close:hover{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -167,9 +197,27 @@ input[type=file]{display:none}
 
 <div id="app">
 
+  <!-- LOGIN -->
+  <div id="login-screen">
+    <div class="login-card">
+      <div class="login-orb"></div>
+      <div class="login-name">Amigo Ley</div>
+      <div class="login-sub">Asesor Jurídico · Colombia · 2026</div>
+      <div class="login-features">
+        <div class="login-feature"><span class="login-feature-icon">⚖️</span><div>Conoce la <strong>legislación colombiana completa</strong>: Constitución, Códigos Civil, Penal, Tránsito y Laboral</div></div>
+        <div class="login-feature"><span class="login-feature-icon">🏥</span><div>Especialista en <strong>Ley 1751/2015</strong> — tus derechos de salud</div></div>
+        <div class="login-feature"><span class="login-feature-icon">📎</span><div>Analiza <strong>contratos, fotomultas y documentos</strong> legales</div></div>
+        <div class="login-feature"><span class="login-feature-icon">🆓</span><div><strong>3 consultas gratis</strong> al día · Plan Premium desde $20.000/mes</div></div>
+      </div>
+      <button class="google-btn" onclick="signInWithGoogle()">
+        <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Continuar con Google
+      </button>
+      <div class="login-terms">Al continuar aceptas los Términos de Uso.<br>Tus datos protegidos por Ley 1581/2012 (Habeas Data) 🇨🇴</div>
+    </div>
+  </div>
 
-
-  <!-- ══ DISCLAIMER ══ -->
+  <!-- DISCLAIMER -->
   <div id="disclaimer">
     <div class="disc-card">
       <div class="disc-logo">
@@ -179,16 +227,16 @@ input[type=file]{display:none}
       </div>
       <div class="disc-box">
         <h2>⚠️ Aviso Legal</h2>
-        <p>Este asistente brinda <strong>orientación jurídica informativa</strong> basada en la legislación colombiana. No constituye concepto jurídico vinculante ni reemplaza un abogado habilitado.</p>
-        <p>Amigo Ley conoce: <strong>Constitución 1991, Código Civil, Código Penal, Código de Tránsito, Código de Comercio, Código Laboral (CST), Ley 1751/2015 (Salud)</strong> y demás leyes vigentes en 2026.</p>
-        <p>Documentos tratados conforme a la <strong>Ley 1581/2012 (Habeas Data)</strong>. No se almacena nada en servidores externos.</p>
+        <p>Este asistente brinda <strong>orientación jurídica informativa</strong> basada en la legislación colombiana vigente. No constituye concepto jurídico vinculante ni reemplaza un abogado habilitado.</p>
+        <p>Amigo Ley conoce: <strong>Constitución 1991, Código Civil, Código Penal, Código de Tránsito, CST Laboral, Ley 1751/2015</strong> y demás leyes vigentes en 2026.</p>
+        <p>Documentos tratados conforme a la <strong>Ley 1581/2012 (Habeas Data)</strong>.</p>
       </div>
       <button class="disc-btn" onclick="initApp()">Entendido — Comenzar →</button>
       <div class="disc-foot">Para uso informativo exclusivo · Colombia 🇨🇴</div>
     </div>
   </div>
 
-  <!-- ══ MAIN CHAT ══ -->
+  <!-- MAIN -->
   <div id="main" style="display:none">
     <div id="header">
       <div class="hdr-left">
@@ -200,278 +248,203 @@ input[type=file]{display:none}
       </div>
       <div class="hdr-right">
         <button class="hdr-btn" onclick="toggleBanner()">✨ Ley del Día</button>
+        <div class="hdr-user" onclick="showUserMenu()" id="hdr-user">
+          <div class="hdr-avatar-placeholder" id="hdr-avatar">?</div>
+          <span class="hdr-username" id="hdr-username">Usuario</span>
+          <span class="plan-badge free" id="plan-badge">FREE</span>
+        </div>
       </div>
     </div>
 
-    <div id="ley-banner" style="display:none"></div>
+    <!-- USAGE BAR -->
+    <div id="usage-bar">
+      <span class="usage-label" id="usage-label">Consultas hoy</span>
+      <div class="usage-track"><div class="usage-fill green" id="usage-fill" style="width:0%"></div></div>
+      <span class="usage-count" id="usage-count">0/3</span>
+    </div>
+
+    <div id="ley-banner"></div>
     <div id="chat"></div>
 
     <div id="input-area">
       <div class="quick-pills" id="quick-pills">
         <span class="pill" onclick="quickAsk('¿Qué son las fotomultas y cómo impugnarlas?')">🚦 Fotomultas</span>
-        <span class="pill" onclick="quickAsk('Mi EPS me está negando un servicio médico, ¿qué puedo hacer?')">🏥 EPS me negó servicio</span>
+        <span class="pill" onclick="quickAsk('Mi EPS me está negando un servicio médico, ¿qué puedo hacer?')">🏥 EPS me negó</span>
         <span class="pill" onclick="quickAsk('Me despidieron sin justa causa, ¿qué derechos tengo?')">⚖️ Despido injusto</span>
-        <span class="pill" onclick="quickAsk('¿Cómo redacto un derecho de petición?')">📋 Derecho de petición</span>
+        <span class="pill" onclick="quickAsk('¿Cómo redacto un derecho de petición?')">📋 Petición</span>
         <span class="pill" onclick="quickAsk('Mi arrendador quiere subirme el arriendo, ¿puede hacerlo?')">🏠 Arriendo</span>
         <span class="pill" onclick="quickAsk('¿Cómo presento una acción de tutela?')">🛡️ Tutela</span>
       </div>
-      <div class="drop-zone" id="drop-zone"
-        onclick="document.getElementById('file-input').click()"
-        ondragover="onDragOver(event)" ondragleave="onDragLeave()" ondrop="onDrop(event)">
-        <span>📎</span>
-        <span>Arrastra PDF, imagen o texto · o haz clic para adjuntar un documento legal</span>
+      <div class="drop-zone locked" id="drop-zone" id="drop-zone">
+        <span>🔒</span>
+        <span id="drop-label">Sube documentos con el plan Premium</span>
       </div>
       <input type="file" id="file-input" accept=".pdf,.txt,.png,.jpg,.jpeg,.webp" onchange="onFileChange(event)">
       <div class="input-row">
-        <textarea id="msg-input" placeholder="Pregunta sobre tus derechos en Colombia... (Enter para enviar)" rows="1" onkeydown="onKey(event)"></textarea>
+        <textarea id="msg-input" placeholder="Pregunta sobre tus derechos en Colombia..." rows="1" onkeydown="onKey(event)"></textarea>
         <button id="send-btn" onclick="sendMsg()" disabled>↑</button>
       </div>
-      <div class="input-foot">Amigo Ley · Asesoría informativa · No reemplaza abogado profesional</div>
+      <div class="input-foot">Amigo Ley · Orientación informativa · No reemplaza abogado profesional</div>
     </div>
+  </div>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div id="upgrade-modal">
+  <div class="upgrade-card">
+    <div class="upgrade-crown">👑</div>
+    <div class="upgrade-title">Plan Premium</div>
+    <div class="upgrade-sub">Accede a todo el poder de Amigo Ley sin límites diarios</div>
+    <div class="upgrade-features">
+      <div class="upgrade-feature"><span class="upgrade-feature-check">✓</span><span><strong>30 consultas</strong> jurídicas por día</span></div>
+      <div class="upgrade-feature"><span class="upgrade-feature-check">✓</span><span><strong>5 documentos</strong> analizados por día</span></div>
+      <div class="upgrade-feature"><span class="upgrade-feature-check">✓</span><span>Análisis de <strong>contratos, fotomultas</strong> y cartas</span></div>
+      <div class="upgrade-feature"><span class="upgrade-feature-check">✓</span><span>Borradores de <strong>tutelas y derechos de petición</strong></span></div>
+      <div class="upgrade-feature"><span class="upgrade-feature-check">✓</span><span>Soporte prioritario 🇨🇴</span></div>
+    </div>
+    <div class="upgrade-price">$20.000 <span>COP / mes</span></div>
+    <div style="color:var(--dim);font-size:11px;font-family:'DM Mono',monospace;margin-bottom:18px">Cancela cuando quieras</div>
+    <button class="upgrade-cta" onclick="goPremium()">Activar Premium →</button><br>
+    <button class="upgrade-close" onclick="closeUpgrade()">Ahora no</button>
   </div>
 </div>
 
 <script>
 // ══════════════════════════════════════════════════════
-//  LEYES DEL DÍA (30 entradas)
+//  CONFIG
 // ══════════════════════════════════════════════════════
-const LEYES=[
-  {id:1,art:"Art. 23 Constitución",titulo:"Derecho de Petición",color:"#4fc3f7",breve:"Tienes derecho a presentar peticiones a cualquier autoridad y obtener respuesta en 15 días hábiles.",detalle:"El artículo 23 de la Constitución Política de 1991 garantiza el derecho de petición ante autoridades y ante organizaciones privadas que presten servicios públicos. La Ley 1755/2015 regula los plazos: 15 días hábiles para respuesta general, 10 días para información, 30 para asuntos complejos.",tecnica:"Radicación con copia firmada como prueba. Sin respuesta en plazo: tutela inmediata (Art. 86 CP)."},
-  {id:2,art:"Ley 1480/2011 Art. 47",titulo:"Derecho de Retracto",color:"#81c784",breve:"Compraste por internet y no te gustó: tienes 5 días hábiles para devolver y que te reembolsen.",detalle:"En ventas a distancia (e-commerce, teléfono, catálogo) el consumidor tiene 5 días hábiles desde la recepción para ejercer el retracto sin expresar causa. El comerciante debe devolver el dinero en 30 días. No aplica para alimentos ni bienes perecederos.",tecnica:"Solicitud escrita al vendedor. Sin respuesta: SIC (www.sic.gov.co) o demanda ante juez de pequeñas causas."},
-  {id:3,art:"Ley 769/2002 + 1843/2017",titulo:"Fotomultas: Notificación y Caducidad",color:"#ff8a65",breve:"Sin notificación correcta en 3 días o sin cobro coactivo en 3 años, la fotomulta puede ser nula.",detalle:"Las fotomultas deben notificarse dentro de 3 días hábiles. Sin debida notificación el proceso es nulo. La acción coactiva caduca 3 años desde que la multa quedó en firme. Tienes derecho a período probatorio y recurso de reposición.",tecnica:"Solicita el expediente vía derecho de petición. Interpón recurso de reposición ante el organismo de tránsito citando vicios de notificación."},
-  {id:4,art:"Ley 1751/2015 Art. 10(b)",titulo:"Urgencias: Ningún Pago Previo",color:"#ef5350",breve:"Ninguna clínica puede exigirte documentos o pago para atenderte en urgencia vital. La ley lo prohíbe.",detalle:"El artículo 10(b) de la Ley Estatutaria 1751/2015 garantiza la atención de urgencias 'sin que sea exigible documento o cancelación de pago previo alguno'. El artículo 14 refuerza: para urgencias no se requiere autorización administrativa previa. La negación genera sanciones penales.",tecnica:"Exige atención; documenta la negación. Tutela inmediata. Denuncia a Supersalud: 01800 513 700."},
-  {id:5,art:"Ley 1581/2012",titulo:"Habeas Data: Tus Datos Son Tuyos",color:"#ab47bc",breve:"Tienes derecho a conocer, actualizar y suprimir la información que empresas tengan sobre ti.",detalle:"La Ley 1581/2012 exige autorización previa para usar tus datos. Tienes derecho de acceso, rectificación, supresión y revocación. Las empresas tienen 15 días hábiles para responder. La SIC puede sancionar hasta 2.000 SMMLV.",tecnica:"Solicitud escrita al responsable. Sin respuesta en 15 días: escalar a la SIC (www.sic.gov.co)."},
-  {id:6,art:"Ley 1751/2015 Art. 2°",titulo:"La Salud es Derecho Fundamental Autónomo",color:"#29b6f6",breve:"Salud en Colombia es derecho fundamental autónomo e irrenunciable. Cualquier negación habilita tutela.",detalle:"El Art. 2° de la Ley 1751/2015 declara que el derecho a la salud es autónomo e irrenunciable, e incluye acceso oportuno, eficaz y con calidad a promoción, prevención, diagnóstico, tratamiento, rehabilitación y paliación para todas las personas.",tecnica:"Cualquier negación de servicio necesario habilita tutela inmediata citando Art. 2° Ley 1751/2015. Fallo en 10 días hábiles."},
-  {id:7,art:"Ley 1266/2008",titulo:"Reporte Negativo: Máximo 4 Años",color:"#26c6da",breve:"Al pagar una deuda, el reporte negativo en DataCrédito dura máximo el doble del tiempo de mora, tope 4 años.",detalle:"La Ley 1266/2008 establece permanencia del reporte negativo igual al doble del tiempo en mora, sin exceder 4 años desde la extinción de la obligación. Las centrales deben actualizar en 5 días hábiles.",tecnica:"Conserva certificado de pago. Envíalo con derecho de petición a DataCrédito/TransUnion. Sin actualización: SIC o tutela."},
-  {id:8,art:"Art. 86 Constitución",titulo:"Acción de Tutela: Rápida y Sin Abogado",color:"#ec407a",breve:"En 10 días un juez protege tus derechos fundamentales. Sin abogado, sin costo. Tu recurso más ágil.",detalle:"La tutela (Art. 86 CP) protege derechos fundamentales de forma inmediata ante cualquier juez, sin abogado ni tasa judicial. El juez falla en 10 días. La Ley 1751/2015 preserva expresamente la tutela para la salud.",tecnica:"Escribe: hechos, derechos vulnerados, pretensiones. Presenta ante el juzgado más cercano. No requiere abogado."},
-  {id:9,art:"Ley 1751/2015 Art. 6°(d)",titulo:"Continuidad del Tratamiento Médico",color:"#66bb6a",breve:"Si empezaste un tratamiento, la EPS no puede interrumpirlo por razones administrativas o económicas.",detalle:"El principio de Continuidad (Art. 6°d Ley 1751/2015) establece que una vez iniciado un servicio de salud, no puede interrumpirse por razones administrativas ni económicas. Aplica a tratamientos oncológicos, psiquiátricos, crónicos y cualquier servicio prescrito.",tecnica:"Carta exigiendo continuidad citando Art. 6(d) Ley 1751/2015. Sin respuesta en 48h: tutela urgente por riesgo a la vida."},
-  {id:10,art:"Ley 361/1997",titulo:"Estabilidad Laboral Reforzada: Discapacidad",color:"#ffa726",breve:"Despedir a alguien con discapacidad sin autorización del Inspector de Trabajo es ilegal. Hay reintegro.",detalle:"La Ley 361/1997 y la jurisprudencia (C-531/2000) exigen autorización del Inspector de Trabajo antes del despido de personas en situación de discapacidad. Sin ella: despido ineficaz, reintegro e indemnización de 180 días.",tecnica:"Tutela para reintegro inmediato. Demanda ordinaria laboral para indemnizaciones. Denuncia ante MINTRABAJO."},
-  {id:11,art:"Art. 64 CST",titulo:"Indemnización por Despido sin Justa Causa",color:"#42a5f5",breve:"Te despidieron sin causa: 30 días de salario por el primer año + 20 por cada año adicional.",detalle:"El artículo 64 del Código Sustantivo del Trabajo establece la indemnización por despido injusto en contratos a término indefinido: 30 días de salario por el primer año y 20 días por cada año adicional. El empleador tiene 60 días para pagar o incurre en sanción moratoria.",tecnica:"Verifica la carta de despido. Calcula en el simulador del MINTRABAJO. Si hubo discriminación: tutela + demanda laboral."},
-  {id:12,art:"Ley 1751/2015 Art. 11",titulo:"Protección Especial en Salud",color:"#26a69a",breve:"Niños, embarazadas, adultos mayores y víctimas del conflicto reciben atención en salud sin restricciones.",detalle:"El Art. 11 Ley 1751/2015 garantiza que la atención de niños, niñas, adolescentes, mujeres embarazadas, desplazados, víctimas de violencia, adultos mayores, personas con enfermedades huérfanas y con discapacidad 'no estará limitada por ningún tipo de restricción administrativa o económica'.",tecnica:"Cita el Art. 11 Ley 1751/2015 ante cualquier negación. Tutela urgente. Denuncia simultánea a Supersalud."},
-  {id:13,art:"Arts. 7-44 Constitución",titulo:"Derechos Fundamentales de los Niños",color:"#e57373",breve:"Los derechos de los niños prevalecen sobre los demás. El interés superior del menor es absoluto.",detalle:"El Código de Infancia (Ley 1098/2006) y el Art. 44 CP establecen que los derechos de los niños son prevalentes y el Estado, la familia y la sociedad tienen obligación de protegerlos. Ninguna decisión judicial o administrativa puede ignorar el interés superior del menor.",tecnica:"Denuncia ante el ICBF o Comisaría de Familia. Peligro inmediato: Policía de Infancia (141)."},
-  {id:14,art:"Ley 1751/2015 Art. 10(g)",titulo:"Historia Clínica Gratuita y Confidencial",color:"#7e57c2",breve:"Puedes pedir tu historia clínica completa de forma gratuita. Es tuya y es confidencial.",detalle:"El Art. 10(g) Ley 1751/2015 garantiza que la historia clínica sea confidencial y que el paciente pueda 'consultar la totalidad de su historia clínica en forma gratuita y obtener copia de la misma'. La IPS o EPS no puede cobrar por esto.",tecnica:"Solicita por escrito a la IPS/EPS. Si niegan o cobran: derecho de petición + tutela citando Art. 10(g) Ley 1751/2015."},
-  {id:15,art:"Ley 820/2003",titulo:"Arrendamiento: Incremento Máximo por IPC",color:"#8d6e63",breve:"El arriendo solo puede subir una vez al año y máximo el IPC del año anterior.",detalle:"La Ley 820/2003 establece que el canon solo puede incrementarse una vez al año en porcentaje no superior al IPC anterior. Para desahucio por mora, el arrendador debe seguir proceso judicial, no puede cambiar cerraduras ni retirar bienes.",tecnica:"Si te suben ilegalmente: tutela + SIC. Para desahucio ilegal: tutela por vulneración al mínimo vital y vivienda digna."},
-  {id:16,art:"Ley 1751/2015 Art. 8°",titulo:"Integralidad: Tratamiento Médico Completo",color:"#43a047",breve:"La EPS no puede darte solo parte del tratamiento. El servicio de salud debe ser completo.",detalle:"El Art. 8° Ley 1751/2015 exige servicios de salud completos para prevenir, paliar o curar. No puede fragmentarse la responsabilidad. En caso de duda sobre el alcance, se incluyen TODOS los elementos para lograr el objetivo médico diagnosticado.",tecnica:"Escrito exigiendo integralidad citando Art. 8° Ley 1751/2015. Tutela si persiste la fragmentación del servicio."},
-  {id:17,art:"Art. 333-334 Constitución",titulo:"Libertad de Empresa y Comercio",color:"#00acc1",breve:"Tienes derecho a ejercer actividad económica libremente. El Estado solo puede limitarla por razones de interés general.",detalle:"El Art. 333 CP garantiza la libertad económica y de empresa. La SIC protege la libre competencia. El Código de Comercio (Decreto 410/1971) regula los contratos mercantiles. Las restricciones deben estar expresamente autorizadas por ley.",tecnica:"Denuncia prácticas anticompetitivas ante la SIC. Para conflictos contractuales mercantiles: conciliación o arbitraje comercial."},
-  {id:18,art:"Ley 1751/2015 Art. 10(d)",titulo:"Consentimiento Informado: Tú Decides",color:"#e53935",breve:"Ningún médico puede hacerte un procedimiento sin explicarte los riesgos y obtener tu aceptación libre.",detalle:"El Art. 10(d) Ley 1751/2015 garantiza información clara para 'tomar decisiones libres, conscientes e informadas'. Establece que 'ninguna persona podrá ser obligada, contra su voluntad, a recibir un tratamiento de salud'. Este principio tiene rango estatutario.",tecnica:"Firma o rechaza el consentimiento informado siempre por escrito. Procedimiento sin consentimiento: denuncia ante Supersalud y Tribunal Ético Médico."},
-  {id:19,art:"Art. 29 Constitución",titulo:"Debido Proceso: Tu Derecho a Defenderte",color:"#fb8c00",breve:"Nadie puede sancionarte sin juicio previo, sin escucharte y sin darte oportunidad de defenderte.",detalle:"El Art. 29 CP consagra el debido proceso aplicable a actuaciones judiciales Y administrativas: juez natural, presunción de inocencia, derecho a la defensa, contradicción y legalidad de la pena. Las autoridades que lo violen pueden ser tuteladas.",tecnica:"Si vulneran tu debido proceso: tutela en 10 días si hay perjuicio irremediable. Recurso de nulidad ante el mismo proceso. Queja ante la PGN."},
-  {id:20,art:"Ley 1751/2015 Art. 10(f)",titulo:"Trato Digno en el Sistema de Salud",color:"#d81b60",breve:"Tienes derecho a ser atendido con respeto a tu cultura y creencias. Ningún personal médico puede tratarte de forma degradante.",detalle:"El Art. 10(f) Ley 1751/2015 garantiza trato digno respetando creencias y costumbres. El literal (o) prohíbe en 'ningún caso tratos crueles o inhumanos'. Aplica a médicos, enfermería, administrativos y personal de seguridad.",tecnica:"Denuncia de maltrato ante la Defensoría del Paciente de la IPS y ante Supersalud. Tutela por vulneración de dignidad humana (Art. 1° CP)."},
-  {id:21,art:"Arts. 74-76 Código Penal",titulo:"Querella y Denuncia Penal",color:"#558b2f",breve:"Puedes denunciar un delito en cualquier URI o Fiscalía. Algunos delitos solo proceden si tú lo solicitas (querella).",detalle:"El Código de Procedimiento Penal (Ley 906/2004) establece dos vías: denuncia (delitos perseguibles de oficio) y querella (delitos que requieren iniciativa de la víctima como estafa, injuria, calumnia). La Fiscalía tiene obligación de investigar toda denuncia.",tecnica:"Denuncia ante la URI más cercana o en el portal de la Fiscalía (www.fiscalia.gov.co). Para violencia intrafamiliar: también ante Comisaría de Familia."},
-  {id:22,art:"Ley 1751/2015 Art. 6°(c)",titulo:"Equidad: Salud para Personas Vulnerables",color:"#1e88e5",breve:"El Estado debe adoptar políticas especiales para mejorar la salud de personas de bajos recursos y vulnerables.",detalle:"El principio de Equidad (Art. 6°c Ley 1751/2015) obliga al Estado a políticas específicas para personas de escasos recursos y grupos vulnerables. El Art. 24 obliga disponibilidad en zonas marginadas donde la red pública responde a rentabilidad social, no económica.",tecnica:"Sin servicios básicos de salud en tu municipio: acción popular (Art. 88 CP). Derecho de petición al MinSalud. Denuncia ante la Defensoría del Pueblo."},
-  {id:23,art:"Art. 1° Código Civil + 1495",titulo:"Los Contratos Son Ley para las Partes",color:"#00838f",breve:"Todo contrato válidamente celebrado obliga a las partes. El incumplimiento genera responsabilidad civil.",detalle:"El Art. 1602 del Código Civil establece que 'todo contrato legalmente celebrado es una ley para los contratantes'. El incumplimiento da derecho al cumplimiento forzado o a la resolución del contrato, más indemnización de perjuicios (Art. 1546 CC). Aplica a contratos escritos y verbales.",tecnica:"Ante incumplimiento: carta exigiendo cumplimiento con plazo. Sin respuesta: proceso ejecutivo si hay título ejecutivo, o proceso declarativo ordinario."},
-  {id:24,art:"Ley 1751/2015 Art. 17",titulo:"Autonomía Médica: La EPS No Puede Presionar",color:"#f06292",breve:"Tu médico tiene autonomía para decidir tu tratamiento. La EPS no puede presionarlo a negarte servicios.",detalle:"El Art. 17 Ley 1751/2015 garantiza la autonomía del médico y prohíbe 'todo constreñimiento, presión o restricción del ejercicio profesional'. Las EPS no pueden instruir a médicos a prescribir medicamentos más baratos en detrimento de la salud del paciente.",tecnica:"Si tu EPS cambia la prescripción de tu médico sin justificación: denuncia ante el Tribunal Ético Médico. Tutela citando Art. 17 Ley 1751/2015."},
-  {id:25,art:"Art. 24 Constitución",titulo:"Libertad de Circulación en Colombia",color:"#ff7043",breve:"Todo colombiano puede transitar libremente por el territorio nacional. Restricciones solo por ley.",detalle:"El Art. 24 CP garantiza la libertad de circulación dentro del territorio nacional y al exterior. Solo puede limitarse por mandato judicial o en los casos previstos en la ley (ej: estado de excepción declarado legalmente). Las autoridades de policía no pueden retener sin causa.",tecnica:"Si te retienen sin causa: exige la razón legal. Tutela inmediata. Queja ante la Inspección de Policía o IACOP."},
-  {id:26,art:"Ley 1751/2015 Art. 14",titulo:"Urgencias: Sin Autorizaciones Previas",color:"#00897b",breve:"Para urgencias la EPS NO puede pedir autorizaciones previas. La negación es punible penalmente.",detalle:"El Art. 14 Ley 1751/2015: para urgencias no se requiere 'ningún tipo de autorización administrativa'. El parágrafo 1° establece sanciones penales y disciplinarias para representantes legales de entidades que niegan el servicio. El parágrafo 2° preserva la tutela.",tecnica:"En urgencia: ninguna autorización es exigible. Cita el Art. 14 Ley 1751/2015. Denuncia penal posterior al representante legal de la IPS o EPS."},
-  {id:27,art:"Arts. 36-37 Código de Tránsito",titulo:"Licencia de Conducción: Categorías y Vigencia",color:"#7986cb",breve:"Conducir sin licencia o con licencia vencida genera multa de hasta 30 SMDLV y retención del vehículo.",detalle:"El Código Nacional de Tránsito (Ley 769/2002) establece las categorías de licencia de conducción. Conducir sin licencia vigente es infracción grave. Las licencias se renuevan según la categoría. El examen médico periódico es obligatorio para renovación.",tecnica:"Renueva tu licencia antes del vencimiento en el CRC habilitado. Impugna comparendos por vicios de notificación ante el organismo de tránsito."},
-  {id:28,art:"Ley 1751/2015 Art. 15 §3",titulo:"Enfermedades Raras: Acceso Siempre Garantizado",color:"#5c6bc0",breve:"Las exclusiones del plan de salud JAMÁS aplican a enfermedades raras o huérfanas. Siempre procede tutela.",detalle:"El parágrafo 3° del Art. 15 Ley 1751/2015 es categórico: 'bajo ninguna circunstancia deberá entenderse que los criterios de exclusión afectarán el acceso a tratamientos a las personas que sufren enfermedades raras o huérfanas'. Sin importar el costo del medicamento.",tecnica:"Tutela inmediata sin importar si el tratamiento está excluido del PBS. Para enfermedades raras: tutela siempre procede. Cita Art. 15 §3 Ley 1751/2015."},
-  {id:29,art:"Art. 88 CP + Ley 472/1998",titulo:"Acción Popular: Defiende Derechos Colectivos",color:"#26c6da",breve:"Cualquier ciudadano puede defender derechos colectivos (ambiente, espacio público). Es gratuita y sin abogado.",detalle:"Las acciones populares (Art. 88 CP, Ley 472/1998) protegen derechos colectivos como ambiente sano, espacio público, moralidad administrativa y seguridad pública. Son gratuitas, no requieren abogado y el presentante tiene derecho a incentivo económico.",tecnica:"Escrito con hechos, derechos afectados y medidas pedidas. Sin abogado. Acción de grupo: mínimo 20 personas afectadas. Ante Tribunal Administrativo."},
-  {id:30,art:"Ley 1751/2015 Art. 10(p)",titulo:"Prohibición de Carga Burocrática al Paciente",color:"#9ccc65",breve:"La EPS no puede enviarte de ventanilla en ventanilla. Los trámites entre entidades son su responsabilidad.",detalle:"El Art. 10(p) Ley 1751/2015 garantiza el derecho a 'que no se le trasladen las cargas administrativas y burocráticas que les corresponde asumir a los encargados o intervinientes en la prestación del servicio'. La EPS no puede pedirte gestionar autorizaciones entre entidades.",tecnica:"Documenta cada trámite que te pidan. Derecho de petición exigiendo gestión interna. Tutela + denuncia a Supersalud por carga burocrática indebida."}
-];
+const API_URL = '/api/chat';
+const SUPABASE_URL = 'https://qspbuutauihcuvsxjmcs.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFzcGJ1dXRhdWloY3V2c3hqbWNzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5NDIyMDIsImV4cCI6MjA5MTUxODIwMn0.bzzkm4LV4_1PAU0PC9am2F-zXVGTlL6WYcyTEl-jWFg';
+const GOOGLE_CLIENT_ID = '987326208252-vdejm5hhn0bkf9c38cluue4jnpj65coh.apps.googleusercontent.com';
 
-// ══════════════════════════════════════════════════════
-//  SISTEMA PROMPT COMPLETO — ABOGADO COLOMBIANO
-// ══════════════════════════════════════════════════════
-const SYSTEM_PROMPT = `Eres Amigo Ley, un asesor jurídico colombiano experto y cercano. Tu estilo es el de un abogado colombiano experimentado que habla con su cliente de forma clara, directa y empática: sin jerga innecesaria, pero con dominio técnico total.
-
-PERSONALIDAD:
-- Hablas como un buen abogado colombiano que le explica a su cliente en lenguaje claro
-- Eres directo: dices qué puede hacer el ciudadano, con qué ley y ante qué entidad
-- Siempre citas el artículo y la ley exacta que respalda cada punto
-- Das pasos concretos y accionables
-- Usas **negritas** para términos clave, estructura clara con secciones
-- Eres empático pero eficiente
-
-CONOCIMIENTO JURÍDICO COMPLETO — COLOMBIA 2026:
-
-=== CONSTITUCIÓN POLÍTICA 1991 ===
-- Art. 1°: Estado Social de Derecho, dignidad humana, trabajo y solidaridad
-- Art. 4°: La Constitución es norma de normas
-- Art. 11: Derecho a la vida (inviolable, no pena de muerte)
-- Art. 13: Igualdad ante la ley; protección especial a personas en condición de debilidad manifiesta
-- Art. 15: Intimidad, buen nombre y Habeas Data
-- Art. 16: Libre desarrollo de la personalidad
-- Art. 17: Prohibición de esclavitud y servidumbre
-- Art. 18: Libertad de conciencia
-- Art. 20: Libertad de expresión e información
-- Art. 23: Derecho de petición (respuesta obligatoria)
-- Art. 24: Libertad de circulación
-- Art. 25: Derecho al trabajo (fundamental)
-- Art. 28: Libertad personal — nadie puede ser detenido sin orden judicial salvo flagrancia
-- Art. 29: Debido proceso — nulla poena sine lege, presunción de inocencia, derecho a la defensa
-- Art. 34: Prohibición de confiscación; extinción de dominio en casos de enriquecimiento ilícito
-- Art. 38: Libertad de asociación
-- Art. 40: Derechos políticos y participación ciudadana
-- Art. 44: Derechos fundamentales de los niños (prevalentes)
-- Art. 48-50: Seguridad social y salud como servicios públicos
-- Art. 49: Atención en salud; saneamiento ambiental
-- Art. 51: Derecho a vivienda digna
-- Art. 53: Principios mínimos del trabajo (irrenunciabilidad, favorabilidad, in dubio pro operario)
-- Art. 58: Propiedad privada con función social; expropiación con indemnización previa
-- Art. 64: Derecho de los trabajadores agrarios
-- Art. 78: Protección al consumidor; responsabilidad del productor
-- Art. 83: Principio de buena fe en actuaciones públicas
-- Art. 84: Prohibición de exigir permisos adicionales no previstos en ley
-- Art. 86: Acción de tutela (10 días, sin abogado, sin costo)
-- Art. 87: Acción de cumplimiento (cuando una ley o acto administrativo no se cumple)
-- Art. 88: Acciones populares y de grupo (derechos colectivos)
-- Art. 90: Responsabilidad patrimonial del Estado
-
-=== CÓDIGO CIVIL (Decreto 1400/1970 y ss.) ===
-- Art. 1495: Definición de contrato — acuerdo de voluntades que crea obligaciones
-- Art. 1502: Requisitos de validez del contrato: capacidad, consentimiento libre de vicios, objeto lícito, causa lícita
-- Art. 1508-1516: Vicios del consentimiento: error, fuerza, dolo
-- Art. 1546: Condición resolutoria tácita — incumplimiento permite resolución + indemnización
-- Art. 1602: Todo contrato válidamente celebrado es ley para las partes (pacta sunt servanda)
-- Art. 1604: Graduación de culpa: leve, grave, levísima
-- Art. 1613-1617: Indemnización de perjuicios: daño emergente, lucro cesante, daño moral
-- Art. 1625-1660: Modos de extinción de obligaciones: pago, novación, remisión, compensación, prescripción
-- Arts. 1973-2044: Contrato de arrendamiento de bienes (Ley 820/2003 para vivienda urbana)
-- Arts. 2341-2360: Responsabilidad extracontractual (culpa, daño, nexo causal)
-- Arts. 2512-2545: Prescripción extintiva (ordinaria 10 años, corta 3 años para acciones ejecutivas)
-
-=== CÓDIGO PENAL (Ley 599/2000) ===
-- Art. 9°: Para que haya delito debe haber conducta típica, antijurídica y culpable
-- Art. 11: Principio de lesividad — solo punibles conductas que lesionen o pongan en peligro bienes jurídicos
-- Art. 29: Autoría y participación en el delito
-- Art. 32: Causales de ausencia de responsabilidad (legítima defensa, estado de necesidad, etc.)
-- Arts. 103-110: Homicidio y sus agravantes
-- Arts. 111-127: Lesiones personales
-- Arts. 165-172: Desaparición forzada y secuestro
-- Arts. 182-188: Constreñimiento ilegal, privación ilegal de libertad
-- Arts. 189-197: Violación de domicilio, comunicaciones, datos personales
-- Arts. 239-269: Delitos contra el patrimonio económico: hurto, extorsión, estafa, abuso de confianza, daño en bien ajeno
-- Art. 246: Estafa — engaño para obtener provecho ilícito (1-8 años)
-- Art. 249: Abuso de confianza
-- Art. 220-228: Injuria y calumnia (delitos querellables)
-- Arts. 229-236: Violencia intrafamiliar (querellable pero de interés público)
-- Arts. 269A-J: Delitos informáticos (Ley 1273/2009): acceso abusivo, sabotaje, phishing
-- Arts. 397-434: Delitos contra la administración pública: peculado, concusión, cohecho, prevaricato
-- Arts. 438-453: Delitos contra la administración de justicia: falso testimonio, fraude procesal
-
-=== CÓDIGO DE PROCEDIMIENTO PENAL (Ley 906/2004) ===
-- Art. 66: Denuncia — cualquier persona puede denunciar delitos perseguibles de oficio
-- Art. 69: Querella — para delitos que requieren iniciativa de la víctima (estafa, injuria, calumnia, violencia intrafamiliar)
-- Art. 74: Delitos querellables (listado)
-- Arts. 92-102: Víctimas: derecho a la verdad, justicia y reparación
-- Arts. 132-137: Derechos de las víctimas en el proceso penal
-- Arts. 336-354: Acusación y formulación de cargos
-- Arts. 356-454: Juicio oral, práctica de pruebas, alegaciones
-
-=== CÓDIGO NACIONAL DE TRÁNSITO (Ley 769/2002 + Ley 1843/2017) ===
-- Art. 1°: Las normas de tránsito son de orden público
-- Arts. 7-19: Autoridades de tránsito y sus competencias
-- Art. 22: Licencia de conducción — obligatoria, por categorías (A1, A2, B1, B2, B3, C1, C2, C3)
-- Arts. 24-33: Registro de vehículos, placas, SOAT
-- Art. 35: Revisión técnico-mecánica obligatoria
-- Arts. 55-80: Normas de circulación, señales, prelación de paso
-- Art. 106: Procedimiento de comparendos — debe notificarse en 3 días hábiles, período probatorio, recurso de reposición
-- Art. 121-137: Sanciones: multas (SMDLV), suspensión de licencia, inmovilización
-- Art. 159: Caducidad de la facultad sancionatoria: 3 años desde la infracción
-- Ley 1843/2017: Sistema de detección electrónica (fotomultas) — notificación obligatoria, derecho de contradicción, identificación del infractor
-- Infracciones graves: conducción en estado de embriaguez, exceso de velocidad, semáforo en rojo, no usar cinturón, usar celular al conducir
-
-=== CÓDIGO SUSTANTIVO DEL TRABAJO (CST — Decreto 2663/1950 y ss.) ===
-- Art. 22: Contrato de trabajo — prestación personal de servicio + subordinación + salario
-- Art. 23: Elementos del contrato de trabajo (presunción de laboralidad)
-- Art. 47: Contrato a término indefinido — regla general
-- Art. 46: Contrato a término fijo — máximo 3 años renovables
-- Art. 57: Obligaciones del empleador: afiliar a seguridad social, pagar salario, dotación, etc.
-- Art. 59: Prohibiciones del empleador
-- Art. 62: Terminación con justa causa — listado taxativo de causales
-- Art. 64: Indemnización por terminación sin justa causa (indefinido: 30 días x primer año + 20 días x años adicionales; fijo: salarios pendientes hasta el vencimiento)
-- Art. 65: Sanción moratoria — 1 día de salario por cada día de retardo en pago de liquidación
-- Art. 127: Definición de salario y sus componentes
-- Art. 132: Pactos de salario integral (mínimo 10 SMMLV)
-- Art. 186-192: Vacaciones — 15 días hábiles por año trabajado
-- Art. 249-252: Prima de servicios — 1 mes de salario al año (15 días en junio, 15 en diciembre)
-- Ley 50/1990 Art. 99: Cesantías — 1 mes de salario por año trabajado (consignadas al fondo en enero)
-- Art. 267-268: Intereses sobre cesantías — 12% anual
-- Ley 21/1982 + Ley 89/1988: Parafiscales — SENA 2%, ICBF 3%, Cajas de Compensación 4%
-- Art. 353-381: Asociaciones sindicales y negociación colectiva
-- Art. 430-432: Derecho de huelga (servicios públicos esenciales excluidos)
-- Ley 361/1997: Estabilidad laboral reforzada por discapacidad
-- Ley 1010/2006: Acoso laboral (mobbing) — medidas preventivas, correctivas y sanciones
-- Ley 2121/2021: Trabajo en casa y teletrabajo — mismo régimen laboral + derecho a desconexión digital
-
-=== LEY 1751/2015 — DERECHO FUNDAMENTAL A LA SALUD (completa) ===
-Art. 2°: Autónomo, irrenunciable, individual y colectivo.
-Art. 6° Elementos: Disponibilidad, Aceptabilidad, Accesibilidad (sin discriminación), Calidad.
-Art. 6° Principios: Universalidad, Pro homine, Equidad, Continuidad (no interrupción), Oportunidad, Progresividad, Libre elección, Solidaridad, Eficiencia, Interculturalidad.
-Art. 8°: Integralidad — servicios completos, no fragmentados. En duda: se incluyen todos los elementos esenciales.
-Art. 10° Derechos del paciente: (a) acceso integral; (b) urgencias SIN pago ni doc previo; (c) comunicación con médico; (d) consentimiento informado — nadie obligado contra su voluntad; (e) prestaciones según ley; (f) trato digno; (g) historia clínica gratuita y confidencial; (h) personal capacitado; (i) medicamentos oportunos; (j) higiene y seguridad; (k) confidencialidad; (l) canales de reclamación; (m) rendición de cuentas sobre costos; (n) respeto a donación de órganos; (o) prohibición de tratos crueles; (p) NO traslado de cargas burocráticas al paciente; (q) agotar posibilidades de tratamiento.
-Art. 10° Parágrafo: El incumplimiento de deberes del paciente JAMÁS puede usarse para negar servicios.
-Art. 11°: Sujetos especiales (niños, embarazadas, desplazados, víctimas, adultos mayores, enfermedades huérfanas, discapacidad) — SIN restricción administrativa ni económica.
-Art. 14°: Para urgencias NO se requiere autorización previa. Negación genera sanciones penales.
-Art. 15°: Puede excluirse: cosméticos, sin evidencia, experimentales, no autorizados, en el exterior. §3: JAMÁS para enfermedades raras/huérfanas.
-Art. 17°: Autonomía médica protegida. Prohíbe presión de EPS sobre médicos y dádivas de farmacéuticas.
-Art. 24°: Red pública hospitalaria responde a rentabilidad social, no económica.
-
-=== LEY 1480/2011 — ESTATUTO DEL CONSUMIDOR ===
-- Art. 3°: Derechos del consumidor: información, protección, reclamación, educación
-- Art. 5°: Garantía legal mínima: 1 año bienes muebles, 10 años inmuebles
-- Art. 11: Garantías suplementarias — el vendedor responde aunque no sea el fabricante
-- Art. 23: Publicidad engañosa — prohíbe información falsa o que induzca a error
-- Art. 34: Reversión del pago en ventas por medios electrónicos (5 días)
-- Art. 47: Derecho de retracto en ventas a distancia — 5 días hábiles desde recepción
-- Art. 56: Acciones de protección al consumidor ante la SIC o jueces civiles
-- Art. 58: Proceso de responsabilidad por producto defectuoso
-
-=== LEY 142/1994 — SERVICIOS PÚBLICOS DOMICILIARIOS ===
-- Aplica a: acueducto, alcantarillado, aseo, energía eléctrica, gas natural, telefonía
-- Derechos del usuario: recibir servicio de calidad, peticiones gratuitas, recurrir facturas
-- Recurso de reposición ante la empresa: 15 días hábiles para resolver
-- Recurso de apelación ante la Superintendencia de Servicios Públicos (SSPD)
-- Suspensión del servicio: solo por mora de 3 períodos o por defraudación
-- Las empresas deben notificar con anticipación cualquier suspensión programada
-
-=== OTRAS LEYES CLAVE ===
-- Ley 1266/2008: Habeas Data financiero — reporte negativo máximo doble del tiempo de mora, tope 4 años
-- Ley 820/2003: Arrendamiento vivienda urbana — incremento máximo IPC anterior, desahucio por vía judicial
-- Ley 1437/2011 (CPACA): Procedimiento administrativo — silencio admin negativo a 3 meses, recursos
-- Ley 1755/2015: Peticiones ante privados con servicios públicos — 15 días hábiles
-- Ley 1801/2016: Código Nacional de Policía — traslado por protección máx. 12 horas, debe informarse causa
-- Ley 1384/2010: Cáncer — diagnóstico y tratamiento en máx. 30 días; sanciones a EPS por incumplimiento
-- Ley 1098/2006: Código de Infancia y Adolescencia — interés superior del menor prevalente
-- Ley 361/1997: Estabilidad laboral reforzada por discapacidad
-- Ley 1010/2006: Acoso laboral — comité de convivencia, recurso ante MINTRABAJO
-- Ley 1273/2009: Delitos informáticos — acceso abusivo, phishing, daño informático
-- Ley 100/1993: Sistema General de Seguridad Social (salud, pensiones, riesgos laborales)
-- Ley 769/2002 + 1843/2017: Código de Tránsito + fotomultas
-- Ley 472/1998: Acciones populares y de grupo
-- Ley 1564/2012: Código General del Proceso — proceso oral, mínima cuantía sin abogado
-- Ley 2121/2021: Teletrabajo y trabajo en casa
-- Ley 1618/2013: Inclusión social personas con discapacidad
-- Decreto 410/1971: Código de Comercio — contratos mercantiles, sociedades, obligaciones
-- Decreto 624/1989: Estatuto Tributario — renta, IVA, retención
-
-INSTRUCCIONES DE RESPUESTA:
-1. Identifica el tema jurídico de la pregunta (tránsito, laboral, salud, penal, civil, consumidor, etc.)
-2. Explica brevemente qué dice la ley al respecto en lenguaje claro
-3. Da los pasos concretos que puede tomar el ciudadano (numerados)
-4. Cita siempre el artículo y la ley específica que respalda
-5. Menciona ante qué entidad presentar la reclamación
-6. Si hay plazos importantes, indícalos
-7. AL FINAL siempre agrega exactamente: "⚠️ Nota: Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado."
-
-NUNCA inventes leyes o artículos. Si no conoces algo con certeza, dilo y sugiere dónde consultar.`;
+const LIMITS = { free: { chats: 3, documents: 0 }, premium: { chats: 30, documents: 5 } };
 
 // ══════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════
-const API_URL = '/api/chat';
+let currentUser = null;
+let userPlan = 'free';
+let todayUsage = { chats: 0, documents: 0 };
 let thinking = false, scanning = false;
 let bannerOpen = false, bannerExpanded = false, lawDay = null;
 const msgHistory = [];
 
 // ══════════════════════════════════════════════════════
-//  UTILS
+//  GOOGLE LOGIN
 // ══════════════════════════════════════════════════════
+function signInWithGoogle() {
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleLogin,
+    auto_select: false
+  });
+  google.accounts.id.prompt();
+}
+
+async function handleGoogleLogin(response) {
+  const payload = parseJwt(response.credential);
+  currentUser = {
+    googleId: payload.sub,
+    email: payload.email,
+    name: payload.name,
+    avatar: payload.picture
+  };
+  localStorage.setItem('amigo_user', JSON.stringify(currentUser));
+  await loadUserData();
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('disclaimer').style.display = 'flex';
+}
+
+function parseJwt(token) {
+  const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+  return JSON.parse(atob(base64));
+}
+
+async function loadUserData() {
+  if (!currentUser) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/users?google_id=eq.${currentUser.googleId}&select=plan,daily_usage(chats,documents,date)`, {
+      headers: { 'apikey': SUPABASE_ANON, 'Authorization': 'Bearer ' + SUPABASE_ANON }
+    });
+    const data = await res.json();
+    if (data && data.length > 0) {
+      userPlan = data[0].plan || 'free';
+      const today = new Date().toISOString().split('T')[0];
+      const todayData = (data[0].daily_usage || []).find(u => u.date === today);
+      if (todayData) todayUsage = { chats: todayData.chats || 0, documents: todayData.documents || 0 };
+    }
+  } catch(e) { console.log('Usage load error:', e); }
+  updateUsageUI();
+}
+
+// ══════════════════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════════════════
+function updateUsageUI() {
+  const limits = LIMITS[userPlan] || LIMITS.free;
+  const used = todayUsage.chats;
+  const max = limits.chats;
+  const pct = Math.min((used / max) * 100, 100);
+
+  document.getElementById('usage-count').textContent = `${used}/${max}`;
+  document.getElementById('usage-label').textContent = userPlan === 'premium' ? '👑 Consultas hoy' : 'Consultas hoy';
+
+  const fill = document.getElementById('usage-fill');
+  fill.style.width = pct + '%';
+  fill.className = 'usage-fill ' + (pct >= 100 ? 'red' : pct >= 70 ? 'gold' : 'green');
+
+  const badge = document.getElementById('plan-badge');
+  badge.textContent = userPlan === 'premium' ? 'PREMIUM' : 'FREE';
+  badge.className = 'plan-badge ' + userPlan;
+
+  if (currentUser) {
+    document.getElementById('hdr-username').textContent = currentUser.name?.split(' ')[0] || 'Usuario';
+    const avatarEl = document.getElementById('hdr-avatar');
+    if (currentUser.avatar) {
+      avatarEl.innerHTML = `<img src="${currentUser.avatar}" style="width:22px;height:22px;border-radius:50%;object-fit:cover">`;
+    }
+  }
+
+  // Drop zone
+  const dropZone = document.getElementById('drop-zone');
+  const dropLabel = document.getElementById('drop-label');
+  if (userPlan === 'premium') {
+    dropZone.className = 'drop-zone';
+    dropZone.onclick = () => document.getElementById('file-input').click();
+    dropZone.ondragover = onDragOver;
+    dropZone.ondragleave = onDragLeave;
+    dropZone.ondrop = onDrop;
+    dropLabel.textContent = 'Arrastra PDF, imagen o texto · o haz clic para adjuntar';
+    dropZone.querySelector('span').textContent = '📎';
+  } else {
+    dropZone.className = 'drop-zone locked';
+    dropZone.onclick = () => showUpgrade('docs');
+    dropLabel.textContent = 'Sube documentos con el plan Premium 👑';
+  }
+}
+
+function showUpgrade(reason) {
+  document.getElementById('upgrade-modal').style.display = 'flex';
+}
+function closeUpgrade() {
+  document.getElementById('upgrade-modal').style.display = 'none';
+}
+function goPremium() {
+  // En Google Play esto se maneja nativamente
+  // Para web: redirigir a página de pago
+  addMsg('bot', '👑 Para activar el **Plan Premium** descarga Amigo Ley en Google Play y suscríbete desde la app.\n\nMientras tanto, si tienes preguntas escríbeme aquí. 🇨🇴');
+  closeUpgrade();
+}
+function showUserMenu() {
+  addMsg('bot', `Hola **${currentUser?.name?.split(' ')[0] || 'Usuario'}** 👋\n\nTu plan actual: **${userPlan === 'premium' ? '👑 Premium' : '🆓 Gratuito'}**\nConsultas hoy: **${todayUsage.chats}/${LIMITS[userPlan].chats}**\n\n${userPlan === 'free' ? 'Actualiza al plan Premium por $20.000 COP/mes para 30 consultas diarias y análisis de documentos.' : 'Gracias por ser usuario Premium. 🙏'}`);
+}
+
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function parseMd(t){
   return esc(t)
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g,'<em>$1</em>')
-    .replace(/^(\d+\.) /gm,'$1 ');
+    .replace(/\*(.+?)\*/g,'<em>$1</em>');
 }
 function scrollChat(){ const c=document.getElementById('chat'); if(c) requestAnimationFrame(()=>{ c.scrollTop=c.scrollHeight; }); }
 function setOrbState(s){
@@ -499,26 +472,38 @@ function typeText(el, text, onDone){
 // ══════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',()=>{
-  const msgInp=document.getElementById('msg-input');
-  if(msgInp){
-    msgInp.addEventListener('input',()=>{
-      msgInp.style.height='40px';
-      msgInp.style.height=Math.min(msgInp.scrollHeight,110)+'px';
-      document.getElementById('send-btn').disabled=!msgInp.value.trim();
+document.addEventListener('DOMContentLoaded', () => {
+  // Check stored user
+  const stored = localStorage.getItem('amigo_user');
+  if (stored) {
+    try {
+      currentUser = JSON.parse(stored);
+      loadUserData().then(() => {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('disclaimer').style.display = 'flex';
+      });
+    } catch(e) { localStorage.removeItem('amigo_user'); }
+  }
+
+  const msgInp = document.getElementById('msg-input');
+  if (msgInp) {
+    msgInp.addEventListener('input', () => {
+      msgInp.style.height = '40px';
+      msgInp.style.height = Math.min(msgInp.scrollHeight, 110) + 'px';
+      document.getElementById('send-btn').disabled = !msgInp.value.trim();
     });
   }
 });
 
-function initApp(){
-  document.getElementById('disclaimer').style.display='none';
-  const m=document.getElementById('main');
-  m.style.cssText='display:flex;flex:1;flex-direction:column;overflow:hidden;min-height:0';
+function initApp() {
+  document.getElementById('disclaimer').style.display = 'none';
+  const m = document.getElementById('main');
+  m.style.cssText = 'display:flex;flex:1;flex-direction:column;overflow:hidden;min-height:0';
+  updateUsageUI();
   addMsg('bot',
-    'Hola, soy **Amigo Ley** 🇨🇴 Tu asesor jurídico colombiano.\n\n' +
-    'Conozco la legislación colombiana completa: Constitución, Código Civil, Código Penal, Código de Tránsito, Código Laboral, Ley de Salud y más.\n\n' +
-    'Cuéntame tu situación con todos los detalles que puedas — mientras más contexto me des, mejor puedo orientarte.\n\n' +
-    '*También puedes subir documentos (contratos, fotomultas, cartas) para que los analice.*'
+    `Hola **${currentUser?.name?.split(' ')[0] || 'amigo'}**, soy **Amigo Ley** 🇨🇴\n\n` +
+    'Tu asesor jurídico colombiano. Cuéntame tu situación con todos los detalles — mientras más contexto me des, mejor puedo orientarte.\n\n' +
+    `*Plan actual: ${userPlan === 'premium' ? '👑 Premium — 30 consultas/día' : '🆓 Gratuito — 3 consultas/día'}*`
   );
   initLeyDia();
 }
@@ -526,6 +511,39 @@ function initApp(){
 // ══════════════════════════════════════════════════════
 //  LEY DEL DÍA
 // ══════════════════════════════════════════════════════
+const LEYES=[
+  {id:1,art:"Art. 23 Constitución",titulo:"Derecho de Petición",color:"#4fc3f7",breve:"Tienes derecho a presentar peticiones a cualquier autoridad y obtener respuesta en 15 días hábiles.",detalle:"El artículo 23 de la Constitución Política de 1991 garantiza el derecho de petición ante autoridades y organizaciones privadas que presten servicios públicos. La Ley 1755/2015 fija los plazos.",tecnica:"Radicación con copia firmada. Sin respuesta en 15 días: tutela inmediata (Art. 86 CP)."},
+  {id:2,art:"Ley 1480/2011 Art. 47",titulo:"Derecho de Retracto",color:"#81c784",breve:"Compraste por internet y no te gustó: tienes 5 días hábiles para devolver y que te reembolsen.",detalle:"En ventas a distancia el consumidor tiene 5 días hábiles desde la recepción para ejercer el retracto sin expresar causa. El comerciante devuelve el dinero en 30 días.",tecnica:"Solicitud escrita al vendedor. Sin respuesta: SIC (www.sic.gov.co)."},
+  {id:3,art:"Ley 769/2002 + 1843/2017",titulo:"Fotomultas: Caducidad y Recursos",color:"#ff8a65",breve:"Sin notificación correcta en 3 días o sin cobro coactivo en 3 años, la fotomulta puede ser nula.",detalle:"Las fotomultas deben notificarse dentro de 3 días hábiles. Sin debida notificación el proceso es nulo. La acción coactiva caduca 3 años desde que la multa quedó en firme.",tecnica:"Solicita el expediente vía derecho de petición. Recurso de reposición ante el organismo de tránsito."},
+  {id:4,art:"Ley 1751/2015 Art. 10(b)",titulo:"Urgencias: Sin Pago Previo",color:"#ef5350",breve:"Ninguna clínica puede exigirte documentos o pago para atenderte en urgencia vital.",detalle:"El artículo 10(b) garantiza la atención de urgencias sin que sea exigible documento o cancelación de pago previo. El artículo 14 refuerza: para urgencias no se requiere autorización previa.",tecnica:"Exige atención; documenta la negación. Tutela inmediata. Supersalud: 01800 513 700."},
+  {id:5,art:"Ley 1581/2012",titulo:"Habeas Data: Tus Datos Son Tuyos",color:"#ab47bc",breve:"Tienes derecho a conocer, actualizar y suprimir la información que empresas tengan sobre ti.",detalle:"La Ley 1581/2012 exige autorización previa para usar tus datos. Tienes derecho de acceso, rectificación, supresión y revocación. Las empresas tienen 15 días hábiles para responder.",tecnica:"Solicitud escrita al responsable. Sin respuesta en 15 días: SIC (www.sic.gov.co)."},
+  {id:6,art:"Ley 1751/2015 Art. 2°",titulo:"La Salud es Derecho Fundamental",color:"#29b6f6",breve:"Salud en Colombia es derecho fundamental autónomo e irrenunciable. Cualquier negación habilita tutela.",detalle:"El Art. 2° declara que el derecho a la salud es autónomo e irrenunciable, e incluye acceso oportuno, eficaz y con calidad.",tecnica:"Cualquier negación de servicio necesario habilita tutela inmediata. Fallo en 10 días hábiles."},
+  {id:7,art:"Ley 1266/2008",titulo:"Reporte Negativo: Máximo 4 Años",color:"#26c6da",breve:"Al pagar una deuda, el reporte negativo dura máximo el doble del tiempo de mora, tope 4 años.",detalle:"La Ley 1266/2008 establece permanencia del reporte negativo igual al doble del tiempo en mora, sin exceder 4 años desde la extinción de la obligación.",tecnica:"Certificado de pago + derecho de petición a DataCrédito/TransUnion. Sin actualización: SIC."},
+  {id:8,art:"Art. 86 Constitución",titulo:"Acción de Tutela: Rápida y Sin Abogado",color:"#ec407a",breve:"En 10 días un juez protege tus derechos fundamentales. Sin abogado, sin costo.",detalle:"La tutela protege derechos fundamentales ante cualquier juez, sin abogado ni tasa judicial. El juez falla en 10 días.",tecnica:"Escribe: hechos, derechos vulnerados, pretensiones. Presenta ante el juzgado más cercano."},
+  {id:9,art:"Ley 1751/2015 Art. 6°(d)",titulo:"Continuidad del Tratamiento",color:"#66bb6a",breve:"Si empezaste un tratamiento, la EPS no puede interrumpirlo por razones administrativas.",detalle:"El principio de Continuidad establece que una vez iniciado un servicio de salud, no puede interrumpirse por razones administrativas ni económicas.",tecnica:"Carta exigiendo continuidad citando Art. 6(d) Ley 1751/2015. Sin respuesta: tutela urgente."},
+  {id:10,art:"Art. 64 CST",titulo:"Indemnización por Despido Injusto",color:"#ffa726",breve:"Te despidieron sin causa: 30 días de salario por el primer año + 20 por cada año adicional.",detalle:"El artículo 64 CST establece la indemnización por despido injusto en contratos a término indefinido: 30 días por el primer año y 20 días por cada año adicional.",tecnica:"Verifica carta de despido. Calcula en simulador del MINTRABAJO."},
+  {id:11,art:"Ley 820/2003",titulo:"Arriendo: Solo Sube el IPC",color:"#8d6e63",breve:"El arriendo solo puede subir una vez al año y máximo el IPC del año anterior.",detalle:"La Ley 820/2003 establece que el canon solo puede incrementarse una vez al año en porcentaje no superior al IPC anterior.",tecnica:"Si te suben ilegalmente: tutela + SIC."},
+  {id:12,art:"Ley 1751/2015 Art. 11",titulo:"Protección Especial en Salud",color:"#26a69a",breve:"Niños, embarazadas, adultos mayores y víctimas del conflicto reciben atención sin restricciones.",detalle:"El Art. 11 garantiza que sujetos de especial protección no estarán limitados por ningún tipo de restricción administrativa o económica.",tecnica:"Cita Art. 11 Ley 1751/2015 ante cualquier negación. Tutela urgente."},
+  {id:13,art:"Art. 29 Constitución",titulo:"Debido Proceso: Tu Derecho a Defenderte",color:"#fb8c00",breve:"Nadie puede sancionarte sin juicio previo, sin escucharte y sin darte oportunidad de defenderte.",detalle:"El Art. 29 CP consagra el debido proceso aplicable a actuaciones judiciales Y administrativas: juez natural, presunción de inocencia, derecho a la defensa.",tecnica:"Si vulneran tu debido proceso: tutela en 10 días. Recurso de nulidad ante el mismo proceso."},
+  {id:14,art:"Ley 1751/2015 Art. 10(g)",titulo:"Historia Clínica Gratuita",color:"#7e57c2",breve:"Puedes pedir tu historia clínica completa de forma gratuita. Es tuya y es confidencial.",detalle:"El Art. 10(g) garantiza que el paciente pueda consultar la totalidad de su historia clínica en forma gratuita y obtener copia.",tecnica:"Solicita por escrito a la IPS/EPS. Si niegan o cobran: derecho de petición + tutela."},
+  {id:15,art:"Ley 1751/2015 Art. 8°",titulo:"Integralidad: Tratamiento Completo",color:"#43a047",breve:"La EPS no puede darte solo parte del tratamiento. El servicio de salud debe ser completo.",detalle:"El Art. 8° exige servicios de salud completos para prevenir, paliar o curar. No puede fragmentarse la responsabilidad.",tecnica:"Escrito exigiendo integralidad citando Art. 8° Ley 1751/2015. Tutela si persiste."},
+  {id:16,art:"Art. 23 CP + Ley 1755/2015",titulo:"Peticiones ante Empresas Privadas",color:"#00acc1",breve:"También puedes hacer derechos de petición a bancos y EPS. Tienen 15 días para responder.",detalle:"La Ley 1755/2015 amplió el derecho de petición a organizaciones privadas que presten servicios públicos.",tecnica:"Petición escrita con constancia de recibo. Sin respuesta en 15 días: tutela."},
+  {id:17,art:"Ley 1751/2015 Art. 14",titulo:"Urgencias: Sin Autorizaciones",color:"#00897b",breve:"Para urgencias la EPS NO puede pedir autorizaciones previas. La negación es punible.",detalle:"El Art. 14 establece que para urgencias no se requiere ningún tipo de autorización administrativa. La negación genera sanciones penales.",tecnica:"En urgencia: ninguna autorización es exigible. Denuncia penal al representante legal."},
+  {id:18,art:"Art. 78 Constitución",titulo:"Responsabilidad por Producto Defectuoso",color:"#e53935",breve:"El productor responde por daños de productos defectuosos. No necesitas probar culpa.",detalle:"El Art. 78 CP y la Ley 1480/2011 establecen responsabilidad solidaria del productor por daños causados por bienes defectuosos. Garantía mínima legal: 1 año.",tecnica:"Conserva factura y bien. Reclamo escrito al vendedor. Sin respuesta: SIC."},
+  {id:19,art:"Ley 142/1994",titulo:"Servicios Públicos: Tus Derechos",color:"#558b2f",breve:"Si agua, luz o gas te cobran de más o cortan injustamente, tienes derecho a recurso.",detalle:"La Ley 142/1994 regula los servicios públicos domiciliarios. Derechos: recibir servicio de calidad, recurrir facturas. La empresa tiene 15 días para resolver.",tecnica:"Recurso de reposición ante la empresa. Sin respuesta: Superintendencia de Servicios Públicos."},
+  {id:20,art:"Ley 1801/2016",titulo:"Retención Policial Máximo 12 Horas",color:"#1e88e5",breve:"Nadie puede ser retenido sin causa legal. El traslado por protección no puede exceder 12 horas.",detalle:"La Ley 1801/2016 regula las medidas de policía. Las medidas de traslado por protección no pueden exceder 12 horas.",tecnica:"Exige ser informado de la causa. Al salir: tutela si hubo abuso. Queja ante IACOP."},
+  {id:21,art:"Ley 1751/2015 Art. 10(d)",titulo:"Consentimiento Informado",color:"#d81b60",breve:"Ningún médico puede hacerte un procedimiento sin explicarte los riesgos y obtener tu aceptación.",detalle:"El Art. 10(d) garantiza información clara para tomar decisiones libres. Nadie puede ser obligado contra su voluntad a recibir un tratamiento.",tecnica:"Firma o rechaza el consentimiento por escrito. Sin consentimiento: denuncia ante Supersalud."},
+  {id:22,art:"Ley 361/1997",titulo:"Estabilidad Laboral por Discapacidad",color:"#f06292",breve:"Despedir a alguien con discapacidad sin autorización del Inspector de Trabajo es ilegal.",detalle:"La Ley 361/1997 exige autorización del Inspector de Trabajo antes del despido de personas con discapacidad. Sin ella: despido ineficaz, reintegro e indemnización.",tecnica:"Tutela para reintegro inmediato. Demanda laboral para indemnizaciones."},
+  {id:23,art:"Ley 1010/2006",titulo:"Acoso Laboral: Tienes Recursos",color:"#ff7043",breve:"El acoso laboral (mobbing) es ilegal en Colombia. Tienes mecanismos de denuncia y protección.",detalle:"La Ley 1010/2006 define y sanciona el acoso laboral. El empleador debe tener comité de convivencia. Las conductas reiteradas de hostigamiento, discriminación o maltrato son sancionables.",tecnica:"Denuncia ante el Comité de Convivencia Laboral. Si no actúan: Inspector de Trabajo o tutela."},
+  {id:24,art:"Ley 1751/2015 Art. 17",titulo:"Autonomía del Médico Tratante",color:"#00838f",breve:"Tu médico tiene autonomía para decidir tu tratamiento. La EPS no puede presionarlo.",detalle:"El Art. 17 garantiza la autonomía del médico y prohíbe todo constreñimiento o presión del ejercicio profesional. Las EPS no pueden instruir a médicos a prescribir en contra del paciente.",tecnica:"Si tu EPS cambia la prescripción sin justificación: denuncia ante el Tribunal Ético Médico."},
+  {id:25,art:"Art. 88 CP + Ley 472/1998",titulo:"Acciones Populares: Defiende lo Colectivo",color:"#26c6da",breve:"Cualquier ciudadano puede defender derechos colectivos. Es gratuita y sin abogado.",detalle:"Las acciones populares protegen derechos colectivos como ambiente sano, espacio público, moralidad administrativa. Son gratuitas, no requieren abogado.",tecnica:"Escrito con hechos y derechos afectados. Sin abogado. Ante Tribunal Administrativo."},
+  {id:26,art:"Ley 1751/2015 Art. 15 §3",titulo:"Enfermedades Raras: Siempre Garantizadas",color:"#5c6bc0",breve:"Las exclusiones del plan de salud JAMÁS aplican a enfermedades raras. Siempre procede tutela.",detalle:"El parágrafo 3° del Art. 15 es categórico: los criterios de exclusión no afectarán el acceso a tratamientos de personas con enfermedades raras o huérfanas.",tecnica:"Tutela inmediata. Para enfermedades raras: siempre procede sin importar el costo."},
+  {id:27,art:"Ley 2121/2021",titulo:"Teletrabajo: Mismos Derechos",color:"#9ccc65",breve:"Si trabajas desde casa tienes los mismos derechos laborales. Nadie puede contactarte en tus 12 horas de descanso.",detalle:"La Ley 2121/2021 regula el trabajo en casa. Los trabajadores mantienen todas las prestaciones. El derecho a la desconexión digital prohíbe contacto laboral mínimo 12 horas.",tecnica:"Documenta contactos fuera de horario. Denuncia: MINTRABAJO o Inspector de Trabajo."},
+  {id:28,art:"Art. 51 Constitución",titulo:"Derecho a Vivienda Digna",color:"#4fc3f7",breve:"El Estado debe promover planes de vivienda de interés social. Tienes derecho a un lugar digno para vivir.",detalle:"El Art. 51 CP garantiza el derecho a vivienda digna. El Estado tiene obligación de promover planes habitacionales y acceso a crédito para vivienda de interés social.",tecnica:"Subsidios de vivienda: Caja de Compensación, FONVIVIENDA, Ministerio de Vivienda."},
+  {id:29,art:"Ley 1751/2015 Art. 10(p)",titulo:"Burocracia Médica Prohibida",color:"#ffa726",breve:"La EPS no puede enviarte de ventanilla en ventanilla. Los trámites entre entidades son su responsabilidad.",detalle:"El Art. 10(p) garantiza que no se le trasladen al paciente las cargas administrativas que les corresponde asumir a los encargados o intervinientes en la prestación.",tecnica:"Documenta trámites que te pidan. Derecho de petición exigiendo gestión interna. Tutela + Supersalud."},
+  {id:30,art:"Art. 13 Constitución",titulo:"Igualdad ante la Ley",color:"#ec407a",breve:"Todas las personas son iguales ante la ley. El Estado debe proteger a quienes están en condición de debilidad manifiesta.",detalle:"El Art. 13 CP garantiza la igualdad de todas las personas y obliga al Estado a proteger especialmente a quienes se encuentran en circunstancias de debilidad manifiesta por su condición económica, física o mental.",tecnica:"Discriminación por cualquier condición: tutela por vulneración del Art. 13 CP."}
+];
+
 function initLeyDia(){
   const today=new Date().toDateString();
   const stored=localStorage.getItem('amigo_ley_idx');
@@ -571,18 +589,34 @@ function toggleBanner(){ if(bannerOpen){ setBannerVisible(false); bannerExpanded
 // ══════════════════════════════════════════════════════
 //  CHAT
 // ══════════════════════════════════════════════════════
-function addMsg(role, text, fresh=false){
+function addMsg(role, text, fresh=false, isUpgrade=false){
   if(role==='user') msgHistory.push({role:'user',content:text});
   const chat=document.getElementById('chat');
   if(!chat) return;
   const div=document.createElement('div'); div.className='msg '+role;
-  const bub=document.createElement('div'); bub.className='bubble '+role;
-  // Hide quick pills after first user message
+  const bub=document.createElement('div');
+  bub.className='bubble '+role+(isUpgrade?' upgrade':'');
   if(role==='user'){ const p=document.getElementById('quick-pills'); if(p) p.style.display='none'; }
   if(fresh&&role==='bot'){
     bub.textContent=''; div.appendChild(bub); chat.appendChild(div); scrollChat();
-    typeText(bub,text);
-  } else{ bub.innerHTML=parseMd(text); div.appendChild(bub); chat.appendChild(div); scrollChat(); }
+    typeText(bub,text,()=>{
+      if(isUpgrade){
+        const btn=document.createElement('button');
+        btn.className='upgrade-btn'; btn.textContent='👑 Ver Plan Premium';
+        btn.onclick=()=>showUpgrade('limit');
+        bub.appendChild(btn);
+      }
+    });
+  } else{
+    bub.innerHTML=parseMd(text);
+    if(isUpgrade){
+      const btn=document.createElement('button');
+      btn.className='upgrade-btn'; btn.textContent='👑 Ver Plan Premium';
+      btn.onclick=()=>showUpgrade('limit');
+      bub.appendChild(btn);
+    }
+    div.appendChild(bub); chat.appendChild(div); scrollChat();
+  }
 }
 function showIndicator(id,html,cls){
   if(document.getElementById(id)) return;
@@ -592,6 +626,45 @@ function showIndicator(id,html,cls){
   div.appendChild(bub); chat.appendChild(div); scrollChat();
 }
 function removeIndicator(id){ const el=document.getElementById(id); if(el) el.remove(); }
+
+// ══════════════════════════════════════════════════════
+//  SYSTEM PROMPT
+// ══════════════════════════════════════════════════════
+const SYSTEM_PROMPT = `Eres Amigo Ley, un asesor jurídico colombiano experto y cercano. Tu estilo es el de un abogado colombiano experimentado que habla con su cliente de forma clara, directa y empática.
+
+PERSONALIDAD: Directo, empático, profesional. Siempre citas el artículo y ley exacta. Das pasos concretos y accionables. Usas **negritas** para términos clave.
+
+CONOCIMIENTO COMPLETO:
+- Constitución Política 1991 (Arts. 1-95)
+- Código Civil colombiano (contratos, responsabilidad, prescripción)
+- Código Penal Ley 599/2000 (delitos, procedimiento Ley 906/2004)
+- Código Nacional de Tránsito Ley 769/2002 + Ley 1843/2017 (fotomultas)
+- Código Sustantivo del Trabajo CST (despidos, liquidaciones, prestaciones)
+- Ley 1751/2015 COMPLETA (derecho fundamental a la salud, Arts. 1-26)
+- Ley 1480/2011 Estatuto del Consumidor
+- Ley 142/1994 Servicios Públicos
+- Ley 820/2003 Arrendamiento
+- Ley 1437/2011 CPACA (procedimiento administrativo)
+- Ley 1755/2015 Derecho de Petición
+- Ley 1266/2008 y 1581/2012 Habeas Data
+- Ley 1801/2016 Código de Policía
+- Ley 361/1997 Discapacidad laboral
+- Ley 1010/2006 Acoso laboral
+- Ley 2121/2021 Teletrabajo
+- Ley 472/1998 Acciones populares
+- Ley 1564/2012 Código General del Proceso
+- Decreto 410/1971 Código de Comercio
+
+INSTRUCCIONES:
+1. Identifica el tema jurídico
+2. Explica qué dice la ley en lenguaje claro
+3. Da pasos concretos numerados
+4. Cita el artículo y ley exacta
+5. Menciona la entidad ante quien reclamar
+6. Indica plazos importantes
+7. SIEMPRE al final: "⚠️ Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado."
+
+NUNCA inventes leyes o artículos. Si no sabes algo con certeza, dilo.`;
 
 // ══════════════════════════════════════════════════════
 //  SEND MESSAGE
@@ -608,7 +681,6 @@ async function sendMsg(){
   setOrbState('thinking'); thinking=true;
   showIndicator('thinking-ind','<div class="dot"></div><div class="dot"></div><div class="dot"></div>','thinking-bubble');
 
-  // Build clean alternating message array
   const recent=msgHistory.slice(-20);
   const apiMsgs=[];
   for(let i=0;i<recent.length;i++){
@@ -622,25 +694,50 @@ async function sendMsg(){
     const res=await fetch(API_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:SYSTEM_PROMPT,messages:apiMsgs})
+      body:JSON.stringify({
+        system:SYSTEM_PROMPT,
+        messages:apiMsgs,
+        user:currentUser,
+        isDocument:false
+      })
     });
     const data=await res.json();
-    if(data.error) throw new Error(data.error.message);
+
+    if(data.error==='limit_reached'){
+      removeIndicator('thinking-ind');
+      addMsg('bot', data.message, true, data.upgrade);
+      thinking=false; setOrbState('idle'); return;
+    }
+    if(data.error==='upgrade_required'){
+      removeIndicator('thinking-ind');
+      addMsg('bot', data.message, true, true);
+      thinking=false; setOrbState('idle'); return;
+    }
+    if(data.error){
+      throw new Error(data.error);
+    }
+
     const reply=data.content?.[0]?.text||'No pude procesar tu consulta. Intenta de nuevo.';
     msgHistory.push({role:'assistant',content:reply});
+
+    // Update usage from response
+    if(data.usage){ todayUsage=data.usage; }
+    else{ todayUsage.chats++; }
+    updateUsageUI();
+
     removeIndicator('thinking-ind');
     addMsg('bot',reply,true);
   }catch(err){
     removeIndicator('thinking-ind');
     addMsg('bot','Error de conexión. Verifica tu internet e intenta de nuevo.\n\n⚠️ Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado.',true);
-    console.error('API error:',err);
+    console.error('Error:',err);
   }
   thinking=false; setOrbState('idle');
 }
 function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); } }
 
 // ══════════════════════════════════════════════════════
-//  FILE HANDLING
+//  FILE HANDLING (Premium only)
 // ══════════════════════════════════════════════════════
 function onDragOver(e){ e.preventDefault(); document.getElementById('drop-zone').classList.add('drag-over'); }
 function onDragLeave(){ document.getElementById('drop-zone').classList.remove('drag-over'); }
@@ -649,48 +746,58 @@ function onFileChange(e){ const f=e.target.files[0]; if(f) processFile(f); e.tar
 
 async function processFile(file){
   if(thinking||scanning) return;
+  if(userPlan!=='premium'){ showUpgrade('docs'); return; }
+
   scanning=true; setOrbState('scanning');
   showIndicator('scanning-ind','<div class="scan-beam"></div>📄 Leyendo documento...','scan-bubble');
   addMsg('user','📎 Documento: '+file.name);
-  setTimeout(()=>addMsg('bot','🔒 Anonimizando datos sensibles (CC, teléfonos, direcciones)...',true),500);
 
   const toBase64=f=>new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(r.result.split(',')[1]); r.onerror=rej; r.readAsDataURL(f); });
   const isImg=file.type.startsWith('image/'), isPdf=file.type==='application/pdf';
-  const prompt=`Analiza este documento legal colombiano como un abogado experto. Estructura tu respuesta así:
+  const prompt=`Analiza este documento legal colombiano como abogado experto:
 
 **TIPO DE DOCUMENTO**: (una línea)
-**DATOS CLAVE**: Fecha, entidad emisora, número de referencia (omite CC, teléfonos exactos y direcciones exactas)
-**QUÉ SIGNIFICA**: Explicación en lenguaje claro de qué es y qué implica
+**DATOS CLAVE**: Fecha, entidad, referencia (omite CC, teléfonos y direcciones exactas)
+**QUÉ SIGNIFICA**: Explicación en lenguaje claro
 **PASOS A SEGUIR**:
 1. [Acción inmediata]
 2. [Segundo paso]
-3. [Recurso o defensa disponible]
+3. [Recurso disponible]
 **FUNDAMENTO LEGAL**: Artículos y leyes colombianas aplicables
-**PLAZO PARA ACTUAR**: Si hay fechas límite importantes
+**PLAZO PARA ACTUAR**: Si hay fechas límite
 
 Al final: "⚠️ Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado."`;
 
   try{
-    let apiMessages;
-    if(isImg){ const b64=await toBase64(file); apiMessages=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:file.type,data:b64}},{type:'text',text:prompt}]}]; }
-    else if(isPdf){ const b64=await toBase64(file); apiMessages=[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:prompt}]}]; }
-    else{ let txt=''; try{txt=await file.text();}catch{txt='[No se pudo leer]';} apiMessages=[{role:'user',content:prompt+'\n\nCONTENIDO:\n'+txt.substring(0,4500)}]; }
+    let msgs;
+    if(isImg){ const b64=await toBase64(file); msgs=[{role:'user',content:[{type:'image',source:{type:'base64',media_type:file.type,data:b64}},{type:'text',text:prompt}]}]; }
+    else if(isPdf){ const b64=await toBase64(file); msgs=[{role:'user',content:[{type:'document',source:{type:'base64',media_type:'application/pdf',data:b64}},{type:'text',text:prompt}]}]; }
+    else{ let txt=''; try{txt=await file.text();}catch{txt='[No se pudo leer]';} msgs=[{role:'user',content:prompt+'\n\nCONTENIDO:\n'+txt.substring(0,4500)}]; }
 
     const res=await fetch(API_URL,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:SYSTEM_PROMPT,messages:apiMessages})
+      body:JSON.stringify({system:SYSTEM_PROMPT,messages:msgs,user:currentUser,isDocument:true})
     });
     const data=await res.json();
-    if(data.error) throw new Error(data.error.message);
+
+    if(data.error==='limit_reached'){
+      removeIndicator('scanning-ind');
+      addMsg('bot',data.message,true,false);
+      scanning=false; setOrbState('idle'); return;
+    }
+
     const reply=data.content?.[0]?.text||'No pude analizar el documento.';
     msgHistory.push({role:'assistant',content:reply});
+    if(data.usage){ todayUsage=data.usage; }
+    else{ todayUsage.documents++; }
+    updateUsageUI();
     removeIndicator('scanning-ind');
     addMsg('bot','✅ Análisis completado.\n\n'+reply,true);
-    setTimeout(()=>addMsg('bot','¿Necesitas que redacte algo relacionado con este documento?\n\n• **Derecho de Petición** — Exigir respuesta o acción\n• **Recurso de Impugnación** — Contra una decisión\n• **Acción de Tutela** — Proteger derechos fundamentales\n\nEscríbeme qué necesitas.',true),1600);
+    setTimeout(()=>addMsg('bot','¿Necesitas que redacte algo?\n\n• **Derecho de Petición**\n• **Recurso de Impugnación**\n• **Acción de Tutela**\n\nEscríbeme qué necesitas.',true),1600);
   }catch(err){
     removeIndicator('scanning-ind');
-    addMsg('bot','No pude analizar el archivo. Intenta con PDF, JPG, PNG o TXT.\n\n⚠️ Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado.',true);
+    addMsg('bot','No pude analizar el archivo. Intenta con PDF, JPG, PNG o TXT.',true);
     console.error('File error:',err);
   }
   scanning=false; setOrbState('idle');
