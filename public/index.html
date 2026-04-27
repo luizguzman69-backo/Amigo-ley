@@ -190,6 +190,38 @@ input[type=file]{display:none}
 .quick-pills{display:flex;flex-wrap:wrap;gap:5px;padding:0 0 7px;justify-content:center}
 .pill{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:16px;padding:5px 11px;color:var(--muted);font-size:11.5px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .pill:hover,.pill:active{background:rgba(91,164,245,.1);border-color:rgba(91,164,245,.28);color:rgba(91,164,245,.9)}
+.doc-pill{background:rgba(62,207,178,.08) !important;border-color:rgba(62,207,178,.25) !important;color:rgba(62,207,178,.85) !important}
+.doc-pill:hover{background:rgba(62,207,178,.18) !important;border-color:rgba(62,207,178,.45) !important}
+
+/* DOC WIZARD */
+.dw-title{font-family:'Fraunces',serif;font-size:20px;font-weight:300;color:var(--text);margin-bottom:4px}
+.dw-sub{color:var(--muted);font-size:12.5px;margin-bottom:18px;line-height:1.5}
+.dw-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
+.dw-doc-btn{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:12px;padding:12px 10px;cursor:pointer;transition:all .2s;text-align:left;font-family:'DM Sans',sans-serif}
+.dw-doc-btn:hover,.dw-doc-btn:active{background:rgba(91,164,245,.1);border-color:rgba(91,164,245,.3)}
+.dw-doc-icon{font-size:20px;margin-bottom:5px}
+.dw-doc-name{color:var(--text);font-size:12.5px;font-weight:500;line-height:1.3;margin-bottom:2px}
+.dw-doc-desc{color:var(--dim);font-size:10.5px;line-height:1.3}
+.dw-field-label{color:var(--muted);font-size:12px;margin-bottom:6px;display:block;font-weight:500}
+.dw-field-hint{color:var(--dim);font-size:10.5px;margin-bottom:10px}
+.dw-input{width:100%;padding:11px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:11px;color:var(--text);font-size:13.5px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;margin-bottom:12px}
+.dw-input:focus{border-color:rgba(91,164,245,.4)}
+.dw-textarea{width:100%;padding:11px 13px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:11px;color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:none;min-height:80px;transition:border-color .2s;margin-bottom:12px;line-height:1.55}
+.dw-textarea:focus{border-color:rgba(91,164,245,.4)}
+.dw-next-btn{width:100%;padding:13px;background:linear-gradient(135deg,rgba(91,164,245,.22),rgba(100,80,255,.22));border:1px solid rgba(91,164,245,.4);border-radius:12px;color:var(--text);font-size:13.5px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;margin-bottom:8px}
+.dw-next-btn:hover{background:linear-gradient(135deg,rgba(91,164,245,.38),rgba(100,80,255,.38))}
+.dw-back-btn{width:100%;padding:10px;background:transparent;border:none;color:var(--dim);font-size:12.5px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.dw-progress{display:flex;gap:4px;margin-bottom:18px}
+.dw-prog-step{height:3px;flex:1;border-radius:99px;background:rgba(255,255,255,.08);transition:background .3s}
+.dw-prog-step.done{background:rgba(91,164,245,.7)}
+.dw-prog-step.active{background:rgba(91,164,245,.4)}
+/* DOWNLOAD BUTTONS */
+.dl-btns{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.dl-btn{flex:1;min-width:120px;padding:10px 14px;border-radius:11px;font-size:12.5px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid}
+.dl-btn.word{background:rgba(37,99,235,.15);border-color:rgba(37,99,235,.35);color:rgba(147,197,253,.9)}
+.dl-btn.word:hover{background:rgba(37,99,235,.28)}
+.dl-btn.pdf{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.3);color:rgba(252,165,165,.9)}
+.dl-btn.pdf:hover{background:rgba(220,38,38,.22)}
 
 /* UPGRADE MODAL */
 #upgrade-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0;animation:fadeIn .2s ease}
@@ -294,6 +326,7 @@ input[type=file]{display:none}
       <span class="pill" onclick="quickAsk('derecho de petición')">📋 Petición</span>
       <span class="pill" onclick="quickAsk('arriendo')">🏠 Arriendo</span>
       <span class="pill" onclick="quickAsk('acción de tutela')">🛡️ Tutela</span>
+      <span class="pill doc-pill" onclick="showDocWizard()">📝 Crear Documento</span>
     </div>
     <div class="drop-zone locked" id="drop-zone">
       <span id="drop-icon">🔒</span>
@@ -326,6 +359,14 @@ input[type=file]{display:none}
     <div class="uc-period">por mes · cancela cuando quieras</div>
     <button class="uc-cta" onclick="goPremium()">Activar Premium →</button>
     <button class="uc-skip" onclick="closeUpgrade()">Ahora no</button>
+  </div>
+</div>
+
+<!-- DOCUMENT WIZARD MODAL -->
+<div id="doc-modal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:0" onclick="handleDocModalClick(event)">
+  <div id="doc-modal-card" style="width:100%;max-width:480px;background:#0d0e18;border:1px solid rgba(91,164,245,.2);border-radius:24px 24px 0 0;padding:24px 20px 36px;animation:fadeUp .3s ease forwards;max-height:88vh;overflow-y:auto">
+    <div style="width:40px;height:4px;background:rgba(255,255,255,.12);border-radius:99px;margin:0 auto 18px"></div>
+    <div id="doc-modal-content"></div>
   </div>
 </div>
 
@@ -888,8 +929,334 @@ async function processFile(file){
   }
   scanning=false; setOrbState('idle');
 }
+
+// ══════════════════════════════════════════════════════
+//  DOCUMENT WIZARD
+// ══════════════════════════════════════════════════════
+const DOC_TYPES = [
+  {
+    id:'peticion', icon:'📋', name:'Derecho de Petición',
+    desc:'A entidades públicas o privadas',
+    fields:[
+      {id:'nombre',label:'Tu nombre completo',placeholder:'Ej: Carlos Andrés Gómez Reyes',type:'input'},
+      {id:'cc',label:'Número de cédula',placeholder:'Ej: 1.234.567.890',type:'input'},
+      {id:'direccion',label:'Dirección de residencia',placeholder:'Ej: Calle 45 #12-34, Bogotá',type:'input'},
+      {id:'telefono',label:'Teléfono de contacto',placeholder:'Ej: 300 123 4567',type:'input'},
+      {id:'email',label:'Correo electrónico',placeholder:'Ej: correo@gmail.com',type:'input'},
+      {id:'entidad',label:'¿A qué entidad o empresa va dirigido?',placeholder:'Ej: EPS Sura, Secretaría de Tránsito de Bogotá',type:'input'},
+      {id:'cargo',label:'¿A qué cargo o dependencia?',placeholder:'Ej: Gerente, Servicio al Cliente',type:'input'},
+      {id:'solicitud',label:'¿Qué estás pidiendo o solicitando?',placeholder:'Describe claramente tu solicitud...',type:'textarea'},
+      {id:'hechos',label:'¿Cuáles son los hechos o antecedentes?',placeholder:'Explica brevemente la situación...',type:'textarea'}
+    ]
+  },
+  {
+    id:'tutela', icon:'🛡️', name:'Acción de Tutela',
+    desc:'Para proteger derechos fundamentales',
+    fields:[
+      {id:'nombre',label:'Tu nombre completo',placeholder:'Ej: María Fernanda López',type:'input'},
+      {id:'cc',label:'Número de cédula',placeholder:'Ej: 52.345.678',type:'input'},
+      {id:'direccion',label:'Dirección de residencia',placeholder:'Ej: Carrera 7 #45-23, Medellín',type:'input'},
+      {id:'telefono',label:'Teléfono',placeholder:'Ej: 311 456 7890',type:'input'},
+      {id:'accionado',label:'¿Contra quién va la tutela? (Entidad accionada)',placeholder:'Ej: EPS Nueva EPS, Banco de Bogotá',type:'input'},
+      {id:'derecho',label:'¿Qué derecho fundamental te están vulnerando?',placeholder:'Ej: Derecho a la salud, Derecho de petición',type:'input'},
+      {id:'hechos',label:'Describe los hechos cronológicamente',placeholder:'Fecha y qué pasó exactamente...',type:'textarea'},
+      {id:'pretension',label:'¿Qué le pides al juez?',placeholder:'Ej: Que ordene a la EPS autorizar el procedimiento...',type:'textarea'},
+      {id:'pruebas',label:'¿Qué pruebas tienes? (documentos, correos, etc.)',placeholder:'Ej: Historia clínica, derecho de petición sin respuesta...',type:'textarea'}
+    ]
+  },
+  {
+    id:'impugnacion_multa', icon:'🚦', name:'Impugnación de Fotomulta',
+    desc:'Recurso contra comparendo electrónico',
+    fields:[
+      {id:'nombre',label:'Tu nombre completo',placeholder:'Ej: Juan Pablo Martínez',type:'input'},
+      {id:'cc',label:'Número de cédula',placeholder:'Ej: 79.456.123',type:'input'},
+      {id:'direccion',label:'Dirección de notificación',placeholder:'Ej: Av. Eldorado #45-67, Bogotá',type:'input'},
+      {id:'telefono',label:'Teléfono',placeholder:'Ej: 314 789 0123',type:'input'},
+      {id:'placa',label:'Placa del vehículo',placeholder:'Ej: ABC123',type:'input'},
+      {id:'num_comparendo',label:'Número del comparendo o informe',placeholder:'Ej: BOG-2024-00123456',type:'input'},
+      {id:'fecha_infraccion',label:'Fecha de la supuesta infracción',placeholder:'Ej: 15 de enero de 2024',type:'input'},
+      {id:'entidad',label:'Organismo de tránsito que la expidió',placeholder:'Ej: Secretaría Distrital de Movilidad',type:'input'},
+      {id:'argumento',label:'¿Por qué la estás impugnando?',placeholder:'Ej: No fui notificado, el equipo no estaba calibrado, yo no era el conductor...',type:'textarea'}
+    ]
+  },
+  {
+    id:'recurso_reposicion', icon:'⚖️', name:'Recurso de Reposición',
+    desc:'Contra actos o decisiones administrativas',
+    fields:[
+      {id:'nombre',label:'Tu nombre completo',placeholder:'Ej: Andrés Felipe Soto',type:'input'},
+      {id:'cc',label:'Número de cédula',placeholder:'Ej: 1.098.765.432',type:'input'},
+      {id:'direccion',label:'Dirección de notificación',placeholder:'Ej: Calle 100 #15-20, Bogotá',type:'input'},
+      {id:'telefono',label:'Teléfono',placeholder:'Ej: 320 987 6543',type:'input'},
+      {id:'entidad',label:'Entidad que tomó la decisión',placeholder:'Ej: Secretaría de Tránsito, DIAN, EPS...',type:'input'},
+      {id:'acto',label:'¿Cuál es el acto o decisión que recurres?',placeholder:'Ej: Resolución No. 1234 del 10 de marzo de 2024',type:'input'},
+      {id:'fecha_acto',label:'Fecha del acto administrativo',placeholder:'Ej: 10 de marzo de 2024',type:'input'},
+      {id:'argumentos',label:'¿Por qué crees que la decisión es incorrecta?',placeholder:'Explica tus argumentos...',type:'textarea'},
+      {id:'pretension',label:'¿Qué pides que haga la entidad?',placeholder:'Ej: Que revoque la resolución y archive el proceso...',type:'textarea'}
+    ]
+  },
+  {
+    id:'queja_sic', icon:'🛒', name:'Queja ante la SIC',
+    desc:'Por problemas con empresas o productos',
+    fields:[
+      {id:'nombre',label:'Tu nombre completo',placeholder:'Ej: Luisa Camila Vargas',type:'input'},
+      {id:'cc',label:'Número de cédula',placeholder:'Ej: 43.876.543',type:'input'},
+      {id:'direccion',label:'Dirección',placeholder:'Ej: Carrera 43 #52-56, Medellín',type:'input'},
+      {id:'telefono',label:'Teléfono',placeholder:'Ej: 304 321 0987',type:'input'},
+      {id:'empresa',label:'¿Contra qué empresa o establecimiento?',placeholder:'Ej: Falabella Colombia, Claro Colombia...',type:'input'},
+      {id:'producto',label:'¿Qué producto o servicio es?',placeholder:'Ej: Televisor Samsung, plan de datos móvil...',type:'input'},
+      {id:'valor',label:'¿Cuánto pagaste o vale el producto/servicio?',placeholder:'Ej: $1.500.000',type:'input'},
+      {id:'hechos',label:'¿Qué pasó exactamente?',placeholder:'Describe el problema con fechas...',type:'textarea'},
+      {id:'pretension',label:'¿Qué quieres que pase?',placeholder:'Ej: Que me devuelvan el dinero, que reparen el producto...',type:'textarea'}
+    ]
+  },
+  {
+    id:'carta_terminacion', icon:'💼', name:'Carta de Terminación de Contrato',
+    desc:'Laboral o de servicios',
+    fields:[
+      {id:'remitente',label:'Tu nombre completo (quien termina)',placeholder:'Ej: Empresa XYZ S.A.S.',type:'input'},
+      {id:'cc_nit',label:'Cédula o NIT de quien termina',placeholder:'Ej: 900.123.456-7',type:'input'},
+      {id:'destinatario',label:'Nombre del trabajador o contratista',placeholder:'Ej: Pedro Antonio Ruiz',type:'input'},
+      {id:'cc_dest',label:'Cédula del destinatario',placeholder:'Ej: 80.123.456',type:'input'},
+      {id:'cargo',label:'Cargo o rol del contratado',placeholder:'Ej: Auxiliar de bodega, Desarrollador web...',type:'input'},
+      {id:'fecha_inicio',label:'Fecha de inicio del contrato',placeholder:'Ej: 1 de enero de 2023',type:'input'},
+      {id:'tipo_termino',label:'¿Es con justa causa o sin justa causa?',placeholder:'Ej: Sin justa causa / Con justa causa',type:'input'},
+      {id:'motivo',label:'Motivo o causal (si es con justa causa)',placeholder:'Ej: Incumplimiento reiterado de obligaciones...',type:'textarea'},
+      {id:'ciudad',label:'Ciudad y fecha de la carta',placeholder:'Ej: Bogotá, 1 de abril de 2024',type:'input'}
+    ]
+  },
+  {
+    id:'promesa_compraventa', icon:'🏠', name:'Promesa de Compraventa',
+    desc:'Para bienes inmuebles o vehículos',
+    fields:[
+      {id:'vendedor',label:'Nombre completo del vendedor',placeholder:'Ej: Roberto Carlos Ospina',type:'input'},
+      {id:'cc_vendedor',label:'Cédula del vendedor',placeholder:'Ej: 12.345.678',type:'input'},
+      {id:'comprador',label:'Nombre completo del comprador',placeholder:'Ej: Claudia Patricia Moreno',type:'input'},
+      {id:'cc_comprador',label:'Cédula del comprador',placeholder:'Ej: 43.210.987',type:'input'},
+      {id:'inmueble',label:'Descripción del bien (dirección, matrícula)',placeholder:'Ej: Apartamento 402, Carrera 45 #67-89, Matrícula 123-456789',type:'textarea'},
+      {id:'precio',label:'Precio de venta acordado',placeholder:'Ej: $250.000.000 (doscientos cincuenta millones)',type:'input'},
+      {id:'arras',label:'Valor de las arras o anticipo',placeholder:'Ej: $25.000.000',type:'input'},
+      {id:'fecha_escritura',label:'Fecha acordada para firmar escritura',placeholder:'Ej: 30 de junio de 2024',type:'input'},
+      {id:'notaria',label:'Notaría donde se firmará',placeholder:'Ej: Notaría 12 del Círculo de Bogotá',type:'input'},
+      {id:'ciudad',label:'Ciudad y fecha de la promesa',placeholder:'Ej: Bogotá, 1 de abril de 2024',type:'input'}
+    ]
+  },
+  {
+    id:'contrato_arriendo', icon:'🔑', name:'Contrato de Arrendamiento',
+    desc:'Para vivienda urbana — Ley 820/2003',
+    fields:[
+      {id:'arrendador',label:'Nombre completo del arrendador (dueño)',placeholder:'Ej: Bernardo Alejandro Torres',type:'input'},
+      {id:'cc_arrendador',label:'Cédula del arrendador',placeholder:'Ej: 17.234.567',type:'input'},
+      {id:'arrendatario',label:'Nombre completo del arrendatario',placeholder:'Ej: Mónica Isabel Cruz',type:'input'},
+      {id:'cc_arrendatario',label:'Cédula del arrendatario',placeholder:'Ej: 52.678.901',type:'input'},
+      {id:'inmueble',label:'Dirección del inmueble a arrendar',placeholder:'Ej: Carrera 15 #45-67 Apt 301, Bogotá',type:'textarea'},
+      {id:'canon',label:'Valor del canon mensual',placeholder:'Ej: $1.200.000',type:'input'},
+      {id:'deposito',label:'Valor del depósito (máx. 2 meses)',placeholder:'Ej: $2.400.000',type:'input'},
+      {id:'fecha_inicio',label:'Fecha de inicio del contrato',placeholder:'Ej: 1 de mayo de 2024',type:'input'},
+      {id:'duracion',label:'Duración del contrato',placeholder:'Ej: 12 meses',type:'input'},
+      {id:'servicios',label:'¿Qué servicios públicos incluye?',placeholder:'Ej: Agua y gas incluidos, energía a cargo del arrendatario',type:'input'},
+      {id:'ciudad',label:'Ciudad y fecha de firma',placeholder:'Ej: Bogotá, 1 de mayo de 2024',type:'input'}
+    ]
+  }
+];
+
+let docState = { type:null, fields:{}, step:0, generating:false };
+
+function showDocWizard(){
+  docState = { type:null, fields:{}, step:0, generating:false };
+  document.getElementById('doc-modal').style.display='flex';
+  renderDocTypeSelector();
+}
+function closeDocModal(){ document.getElementById('doc-modal').style.display='none'; }
+function handleDocModalClick(e){ if(e.target===document.getElementById('doc-modal')) closeDocModal(); }
+
+function renderDocTypeSelector(){
+  document.getElementById('doc-modal-content').innerHTML=`
+    <div class="dw-title">📝 Crear Documento Legal</div>
+    <div class="dw-sub">¿Qué tipo de documento necesitas? Lo genero listo para firmar.</div>
+    <div class="dw-grid">
+      ${DOC_TYPES.map(d=>`
+        <button class="dw-doc-btn" onclick="selectDocType('${d.id}')">
+          <div class="dw-doc-icon">${d.icon}</div>
+          <div class="dw-doc-name">${d.name}</div>
+          <div class="dw-doc-desc">${d.desc}</div>
+        </button>`).join('')}
+    </div>`;
+}
+
+function selectDocType(id){
+  docState.type = DOC_TYPES.find(d=>d.id===id);
+  docState.step = 0;
+  docState.fields = {};
+  renderDocStep();
+}
+
+function renderDocStep(){
+  const doc = docState.type;
+  const step = docState.step;
+  const field = doc.fields[step];
+  const total = doc.fields.length;
+  const progHtml = doc.fields.map((_,i)=>`<div class="dw-prog-step ${i<step?'done':i===step?'active':''}"></div>`).join('');
+
+  document.getElementById('doc-modal-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span style="font-size:20px">${doc.icon}</span>
+      <div>
+        <div style="font-size:13px;font-weight:500;color:var(--text)">${doc.name}</div>
+        <div style="font-size:10px;color:var(--dim);font-family:'DM Mono',monospace">Pregunta ${step+1} de ${total}</div>
+      </div>
+    </div>
+    <div class="dw-progress">${progHtml}</div>
+    <label class="dw-field-label">${field.label}</label>
+    ${field.type==='textarea'
+      ? `<textarea class="dw-textarea" id="dw-field-input" placeholder="${field.placeholder}" rows="4"></textarea>`
+      : `<input class="dw-input" id="dw-field-input" type="text" placeholder="${field.placeholder}">`
+    }
+    <button class="dw-next-btn" onclick="docNext()">${step===total-1?'Generar Documento ✨':'Siguiente →'}</button>
+    <button class="dw-back-btn" onclick="${step===0?'renderDocTypeSelector()':'docBack()'}">${step===0?'← Cambiar tipo':'← Atrás'}</button>`;
+
+  setTimeout(()=>document.getElementById('dw-field-input')?.focus(),100);
+
+  // Enter key support
+  const inp = document.getElementById('dw-field-input');
+  if(inp && field.type!=='textarea'){
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter') docNext(); });
+  }
+}
+
+function docNext(){
+  const field = docState.type.fields[docState.step];
+  const val = document.getElementById('dw-field-input')?.value?.trim();
+  if(!val){ document.getElementById('dw-field-input').style.borderColor='rgba(245,110,110,.6)'; return; }
+  docState.fields[field.id] = val;
+  if(docState.step < docState.type.fields.length-1){
+    docState.step++;
+    renderDocStep();
+  } else {
+    generateDocument();
+  }
+}
+
+function docBack(){
+  if(docState.step>0){ docState.step--; renderDocStep(); }
+}
+
+async function generateDocument(){
+  document.getElementById('doc-modal-content').innerHTML=`
+    <div style="text-align:center;padding:32px 0">
+      <div style="font-size:36px;margin-bottom:12px;animation:breathe 1.5s ease-in-out infinite">✨</div>
+      <div style="font-family:'Fraunces',serif;font-size:18px;color:var(--text);margin-bottom:8px">Generando tu documento...</div>
+      <div style="color:var(--muted);font-size:12.5px">Amigo Ley está redactando con<br>los datos que ingresaste</div>
+    </div>`;
+
+  const doc = docState.type;
+  const fields = docState.fields;
+  const fieldsStr = Object.entries(fields).map(([k,v])=>`${k}: ${v}`).join('\n');
+
+  const prompt = `Genera un documento legal colombiano completo, formal y listo para usar.
+
+TIPO DE DOCUMENTO: ${doc.name}
+DATOS DEL USUARIO:
+${fieldsStr}
+
+INSTRUCCIONES:
+- Redacta el documento completo y formal en español
+- Sigue el formato jurídico colombiano estándar
+- Incluye encabezado, ciudad y fecha, saludo, cuerpo, cierre y firma
+- Usa los datos exactos proporcionados
+- Para datos que falten, usa [COMPLETAR] como marcador
+- El documento debe ser listo para imprimir y presentar
+- Al final incluye espacio para firma con nombre y cédula
+- Responde SOLO con el texto del documento, sin explicaciones adicionales`;
+
+  try{
+    const res=await fetch(API_URL,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        system:'Eres un abogado colombiano experto en redacción de documentos legales. Redactas documentos formales, correctos y listos para usar según la legislación colombiana vigente. Responde siempre en español.',
+        messages:[{role:'user',content:prompt}],
+        user:currentUser, isDocument:false
+      })
+    });
+    const data=await res.json();
+    if(data.error) throw new Error(data.message||data.error);
+    const docText = data.content?.[0]?.text || '';
+    renderDocResult(docText, doc.name);
+  }catch(err){
+    document.getElementById('doc-modal-content').innerHTML=`
+      <div style="text-align:center;padding:24px">
+        <div style="font-size:32px;margin-bottom:12px">😕</div>
+        <div style="color:var(--text);margin-bottom:8px">No pude generar el documento</div>
+        <div style="color:var(--muted);font-size:12.5px;margin-bottom:16px">Error de conexión. Intenta de nuevo.</div>
+        <button class="dw-next-btn" onclick="generateDocument()">Reintentar</button>
+        <button class="dw-back-btn" onclick="renderDocTypeSelector()">← Volver</button>
+      </div>`;
+  }
+}
+
+function renderDocResult(text, name){
+  document.getElementById('doc-modal-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <span style="font-size:22px">✅</span>
+      <div>
+        <div style="font-size:14px;font-weight:500;color:var(--text)">Documento listo</div>
+        <div style="font-size:10.5px;color:var(--dim);font-family:'DM Mono',monospace">${name}</div>
+      </div>
+    </div>
+    <div style="background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;padding:14px;max-height:300px;overflow-y:auto;font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap;font-family:'DM Mono',monospace;margin-bottom:14px" id="doc-preview">${esc(text)}</div>
+    <div style="color:var(--dim);font-size:10.5px;font-family:'DM Mono',monospace;margin-bottom:10px">💡 Los campos marcados como [COMPLETAR] debes llenarlos antes de presentar el documento.</div>
+    <div class="dl-btns">
+      <button class="dl-btn word" onclick="downloadWord()">📄 Descargar Word</button>
+      <button class="dl-btn pdf" onclick="downloadPDF()">📕 Descargar PDF</button>
+    </div>
+    <button class="dw-back-btn" style="margin-top:8px" onclick="renderDocTypeSelector()">← Crear otro documento</button>`;
+
+  // Store text for download
+  window._lastDocText = text;
+  window._lastDocName = name;
+}
+
+function downloadWord(){
+  const text = window._lastDocText || '';
+  const name = window._lastDocName || 'Documento';
+  // Generate .doc file (HTML wrapped as Word-compatible)
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <style>
+    body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.8;margin:2.5cm;color:#000}
+    p{margin-bottom:10pt;text-align:justify}
+  </style></head><body>
+  <pre style="font-family:Arial,sans-serif;font-size:12pt;white-space:pre-wrap;line-height:1.8">${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+  </body></html>`;
+  const blob=new Blob([html],{type:'application/msword'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name.replace(/\s+/g,'_')+'.doc'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadPDF(){
+  const text = window._lastDocText || '';
+  const name = window._lastDocName || 'Documento';
+  // Use browser print as PDF
+  const win=window.open('','_blank');
+  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>${name}</title>
+  <style>
+    @page{margin:2.5cm}
+    body{font-family:Arial,sans-serif;font-size:12pt;line-height:1.8;color:#000}
+    pre{white-space:pre-wrap;font-family:Arial,sans-serif;font-size:12pt;line-height:1.8;text-align:justify}
+    @media print{.no-print{display:none}}
+  </style></head><body>
+  <div class="no-print" style="background:#f5f5f5;padding:10px;margin-bottom:20px;font-family:Arial;font-size:12px">
+    💡 Selecciona "Guardar como PDF" en el cuadro de impresión
+    <button onclick="window.print()" style="margin-left:12px;padding:6px 14px;background:#1a56db;color:white;border:none;border-radius:6px;cursor:pointer">🖨️ Imprimir / Guardar PDF</button>
+  </div>
+  <pre>${text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+  </body></html>`);
+  win.document.close();
+  setTimeout(()=>win.print(),500);
+}
 </script>
 </body>
 </html>
+
 
 
