@@ -619,7 +619,7 @@ function initLeyDia(){
   const stored=localStorage.getItem('amigo_ley_idx');
   const storedDate=localStorage.getItem('amigo_ley_date');
   let idx;
-  if(storedDate===today&&stored!==null){ idx=parseInt(stored,10); }
+  if(storedDate===today&&stored!==null){ idx=parseInt(stored,10); if(isNaN(idx)) idx=Math.floor(Math.random()*LEYES.length); }
   else{ idx=Math.floor(Math.random()*LEYES.length); localStorage.setItem('amigo_ley_idx',idx); localStorage.setItem('amigo_ley_date',today); }
   lawDay=LEYES[Math.min(idx,LEYES.length-1)];
   setTimeout(()=>{
@@ -686,12 +686,12 @@ function addMsg(role, text, fresh=false, isUpgrade=false, structuredData=null){
       <div class="related-topics">
         <div class="related-label">💡 Temas relacionados que debes conocer</div>
         <div class="related-pills">
-          ${temas.map(t=>`<button class="related-pill" onclick="quickAsk('${t.replace(/'/g,"\\'")}')">¿Y sobre ${t}?</button>`).join('')}
+          ${temas.map(t=>`<button class="related-pill" data-topic="${esc(t).replace(/"/g,'&quot;')}" onclick="quickAsk(this.dataset.topic)">¿Y sobre ${esc(t)}?</button>`).join('')}
         </div>
       </div>` : '';
     bub.innerHTML=`
       <div class="bot-summary">${parseMd(structuredData.summary)}</div>
-      ${structuredData.keyPoint?`<div class="bot-key"><span class="bot-key-emoji">${structuredData.keyEmoji||'⚡'}</span><span class="bot-key-text">${parseMd(structuredData.keyPoint)}</span></div>`:''}
+      ${structuredData.keyPoint?`<div class="bot-key"><span class="bot-key-emoji">${esc(structuredData.keyEmoji||'⚡')}</span><span class="bot-key-text">${parseMd(structuredData.keyPoint)}</span></div>`:''}
       ${structuredData.detail?`
       <button class="expand-btn" id="${expId}-btn" onclick="toggleExpand('${expId}')">
         <span id="${expId}-icon">📖</span> Ver explicación completa
@@ -743,14 +743,17 @@ function parseMd(t){
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener noreferrer" style="color:var(--blue)">$1</a>')
     .replace(/\n/g,'<br>');
 }
 
 function typeText(el, text, onDone){
   let i=0;
   function step(){
-    if(i<=text.length){ el.innerHTML=parseMd(text.slice(0,i++)); scrollChat(); setTimeout(step,6); }
-    else { el.innerHTML=parseMd(text); scrollChat(); if(onDone) onDone(); }
+    el.innerHTML=parseMd(text.slice(0,++i));
+    scrollChat();
+    if(i<text.length) setTimeout(step,6);
+    else if(onDone) onDone();
   }
   step();
 }
@@ -1123,6 +1126,7 @@ function renderDocStep(){
     <button class="dw-next-btn" onclick="docNext()">${step===total-1?'Generar Documento ✨':'Siguiente →'}</button>
     <button class="dw-back-btn" onclick="${step===0?'renderDocTypeSelector()':'docBack()'}">${step===0?'← Cambiar tipo':'← Atrás'}</button>`;
 
+  const card=document.getElementById('doc-modal-card'); if(card) card.scrollTop=0;
   setTimeout(()=>document.getElementById('dw-field-input')?.focus(),100);
 
   // Enter key support
@@ -1283,7 +1287,8 @@ function downloadWord(){
 <body>${bodyHtml}</body></html>`;
   const blob=new Blob(['\ufeff'+html],{type:'application/msword;charset=utf-8'});
   const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=name.replace(/[\s/\\]/g,'_')+'.doc'; a.click();
+  const a=document.createElement('a'); a.href=url; a.download=name.replace(/[\s/\\]/g,'_')+'.doc';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 
@@ -1411,4 +1416,6 @@ async function createGoogleDoc(token, name, text, btn) {
 </script>
 </body>
 </html>
+
+
 
