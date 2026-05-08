@@ -460,6 +460,8 @@ function handleGoogleLogin(response) {
       avatar: payload.picture
     };
     localStorage.setItem('amigo_user', JSON.stringify(currentUser));
+    localStorage.setItem('amigo_credential', response.credential);
+    localStorage.removeItem('amigo_session_token');
     showDisclaimer();
   } catch(e) { console.error('Login error:', e); }
 }
@@ -473,6 +475,34 @@ function showDisclaimer() {
   document.getElementById('login-screen').style.display = 'none';
   const d = document.getElementById('disclaimer');
   d.style.display = 'flex';
+}
+
+// ══════════════════════════════════════════════════════
+//  AUTH HELPERS
+// ══════════════════════════════════════════════════════
+function getAuthFields() {
+  const st = localStorage.getItem('amigo_session_token');
+  if (st) return { sessionToken: st };
+  const cred = localStorage.getItem('amigo_credential');
+  if (cred) return { googleCredential: cred, user: currentUser };
+  return { user: currentUser };
+}
+
+function handleAuthResponse(res, data) {
+  const newToken = res.headers.get('X-Session-Token');
+  if (newToken) {
+    localStorage.setItem('amigo_session_token', newToken);
+    localStorage.removeItem('amigo_credential');
+  }
+  if (data.error === 'auth_failed' || data.error === 'session_expired') {
+    localStorage.clear();
+    currentUser = null;
+    document.getElementById('main').style.display = 'none';
+    document.getElementById('disclaimer').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    return false;
+  }
+  return true;
 }
 
 // ══════════════════════════════════════════════════════
@@ -768,32 +798,8 @@ function showIndicator(id,html,cls){
 function removeIndicator(id){ const el=document.getElementById(id); if(el) el.remove(); }
 
 // ══════════════════════════════════════════════════════
-//  SYSTEM PROMPT
+//  SYSTEM PROMPT — movido al backend (chat.js)
 // ══════════════════════════════════════════════════════
-const SYSTEM_PROMPT = `INSTRUCCIÓN CRÍTICA: Responde SIEMPRE en español colombiano. NUNCA respondas en inglés. Tu nombre es "Amigo Ley" — NUNCA lo traduzcas.
-
-Eres Amigo Ley, asesor jurídico colombiano. Hablas como un abogado cercano, claro y empático. Usas lenguaje cotidiano colombiano.
-
-FORMATO DE RESPUESTA OBLIGATORIO — devuelve SIEMPRE un JSON válido con esta estructura exacta (todo en español):
-{
-  "summary": "Frase corta en español (máx 2 líneas) que explica la situación en lenguaje cotidiano colombiano",
-  "keyEmoji": "Un emoji relevante",
-  "keyPoint": "La acción MÁS importante que debe hacer el usuario (1 línea en español, usa **negritas** para lo clave)",
-  "detail": "**Qué dice la ley:**\n[explicación en español]\n\n**Pasos a seguir:**\n1. [paso en español]\n2. [paso en español]\n3. [paso en español]\n\n**Ante quién reclamar:**\n[entidad en español]\n\n**Plazo:**\n[plazo en español]\n\n⚠️ Orientación jurídica informativa. No reemplaza la consulta con un abogado habilitado.",
-  "temasRelacionados": ["Tema relacionado 1 en español", "Tema relacionado 2 en español", "Tema relacionado 3 en español"]
-}
-
-REGLAS ESTRICTAS:
-- TODO debe estar en español colombiano. Si escribes en inglés, estás fallando.
-- summary: máximo 2 líneas, sin tecnicismos, como le explicarías a un amigo
-- keyPoint: la acción más urgente e importante
-- detail: técnico, con artículos y leyes colombianas exactas, en español
-- temasRelacionados: 3 temas jurídicos relacionados que el usuario probablemente quiera conocer (cortos, máx 5 palabras cada uno)
-- NUNCA inventes leyes o artículos colombianos
-- Responde SOLO el JSON, sin texto antes ni después, sin markdown code blocks
-- Para saludos o preguntas sin contenido jurídico: summary amigable en español, detail vacío "", temasRelacionados con temas útiles generales
-
-CONOCIMIENTO JURÍDICO COLOMBIA 2026: Constitución 1991, Código Civil, Código Penal (Ley 599/2000), Código de Tránsito (Ley 769/2002 + 1843/2017), CST Laboral, Ley 1751/2015 (Salud Arts. 1-26), Ley 1480/2011 (Consumidor), Ley 142/1994 (Servicios públicos), Ley 820/2003 (Arriendo), Ley 1437/2011 (CPACA), Ley 1755/2015 (Peticiones), Ley 1266/2008 y 1581/2012 (Habeas Data), Ley 1801/2016 (Policía), Ley 361/1997 y 1010/2006 (Laboral especial), Ley 2121/2021 (Teletrabajo), Ley 472/1998 (Acciones populares), Decreto 410/1971 (Comercio).`;
 
 // ══════════════════════════════════════════════════════
 //  SEND MESSAGE
@@ -825,10 +831,11 @@ async function sendMsg(){
   try{
     const res=await fetch(API_URL,{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:SYSTEM_PROMPT,messages:apiMsgs,user:currentUser,isDocument:false})
+      body:JSON.stringify({messages:apiMsgs,isDocument:false,...getAuthFields()})
     });
     const data=await res.json();
 
+    if(!handleAuthResponse(res,data)){ removeIndicator('thinking-ind'); thinking=false; setOrbState('idle'); return; }
     if(data.error==='limit_reached'){
       removeIndicator('thinking-ind');
       addMsg('bot',data.message,true,data.upgrade);
@@ -907,10 +914,11 @@ async function processFile(file){
 
     const res=await fetch(API_URL,{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({system:SYSTEM_PROMPT,messages:msgs,user:currentUser,isDocument:true})
+      body:JSON.stringify({messages:msgs,isDocument:true,...getAuthFields()})
     });
     const data=await res.json();
 
+    if(!handleAuthResponse(res,data)){ removeIndicator('scanning-ind'); scanning=false; setOrbState('idle'); return; }
     if(data.error==='limit_reached'){
       removeIndicator('scanning-ind');
       addMsg('bot',data.message,true,false);
@@ -1189,16 +1197,11 @@ INSTRUCCIONES:
   try{
     const res=await fetch(API_URL,{
       method:'POST', headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        system:'Eres un abogado colombiano experto en redacción de documentos legales. Redactas documentos formales, correctos y listos para usar según la legislación colombiana vigente 2026. Responde SIEMPRE en español. Genera el documento completo sin cortar.',
-        messages:[{role:'user',content:prompt}],
-        user:currentUser,
-        isDocument:false,
-        isWizard:true
-      })
+      body:JSON.stringify({messages:[{role:'user',content:prompt}],isDocument:false,isWizard:true,...getAuthFields()})
     });
     if(!res.ok) throw new Error('Error de red: '+res.status);
     const data=await res.json();
+    if(!handleAuthResponse(res,data)){ closeDocModal(); return; }
     if(data.error==='limit_reached'){
       document.getElementById('doc-modal-content').innerHTML=`
         <div style="text-align:center;padding:28px 0">
